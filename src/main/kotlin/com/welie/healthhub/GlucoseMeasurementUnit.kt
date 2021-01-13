@@ -1,4 +1,4 @@
-
+package com.welie.healthhub
 
 enum class GlucoseMeasurementUnit {
     /**

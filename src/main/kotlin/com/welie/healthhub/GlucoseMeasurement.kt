@@ -1,6 +1,5 @@
-package com.welie.blessedexample
+package com.welie.healthhub
 
-import GlucoseMeasurementUnit
 import java.io.Serializable
 import java.util.*
 import com.welie.blessed.BluetoothBytesParser

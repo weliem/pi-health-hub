@@ -1,3 +1,5 @@
+package com.welie.healthhub
+
 import com.welie.blessed.*
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothCentral.SCANOPTION_NO_NULL_NAMES
@@ -11,11 +13,6 @@ import java.util.UUID
 import com.welie.blessed.BluetoothGattCharacteristic.WriteType
 
 import com.welie.blessed.BluetoothPeripheral
-
-
-
-
-
 
 
 class BluetoothHandler {
@@ -238,7 +235,7 @@ class BluetoothHandler {
     }
 
     companion object {
-        private const val TAG = "BluetoothHandler"
+        private const val TAG = "com.welie.healthhub.BluetoothHandler"
         private val blackList: MutableList<String> = ArrayList()
 
         // UUIDs for the Blood Pressure service (BLP)

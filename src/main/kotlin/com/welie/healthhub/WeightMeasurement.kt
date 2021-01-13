@@ -1,3 +1,5 @@
+package com.welie.healthhub
+
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import com.welie.blessed.BluetoothBytesParser

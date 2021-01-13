@@ -1,3 +1,5 @@
+package com.welie.healthhub
+
 import javax.swing.JFrame
 import java.awt.BorderLayout
 import java.awt.Color

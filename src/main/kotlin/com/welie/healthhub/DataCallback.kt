@@ -1,3 +1,7 @@
+package com.welie.healthhub
+
+import com.welie.healthhub.*
+
 interface DataCallback {
     fun onTemperature(measurement : TemperatureMeasurement)
     fun onBloodPressure(measurement: BloodPressureMeasurement)

@@ -1,3 +1,5 @@
+package com.welie.healthhub
+
 import com.welie.blessed.BluetoothBytesParser
 
 class PulseOximeterContinuousMeasurement(value: ByteArray?) {
