@@ -4,6 +4,7 @@ import javax.swing.JFrame
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Container
+import java.util.*
 
 import javax.swing.JScrollPane
 
@@ -105,5 +106,9 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         with(measurement) {
             setValue(String.format("%.0f", spO2), "%", timestamp.toString())
         }
+    }
+
+    override fun onAirPressure(pressure: Float) {
+        setValue(String.format("%.2f", pressure), "hPa", Calendar.getInstance().time.toString())
     }
 }

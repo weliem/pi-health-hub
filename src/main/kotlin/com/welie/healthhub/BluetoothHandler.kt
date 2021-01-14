@@ -1,6 +1,7 @@
 package com.welie.healthhub
 
 import com.welie.blessed.*
+import com.welie.blessed.BluetoothBytesParser.FORMAT_SINT32
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothCentral.SCANOPTION_NO_NULL_NAMES
 import java.util.*
@@ -50,6 +51,8 @@ class BluetoothHandler {
             peripheral.setNotify(GLS_SERVICE_UUID, GLS_MEASUREMENT_CHARACTERISTIC_UUID, true);
             peripheral.setNotify(GLS_SERVICE_UUID, GLS_MEASUREMENT_CONTEXT_CHARACTERISTIC_UUID, true);
             peripheral.setNotify(GLS_SERVICE_UUID, GLS_RECORD_ACCESS_POINT_CHARACTERISTIC_UUID, true);
+            peripheral.setNotify(THINGY_ENVIRONMENTAL_SERVICE, THINGY_TEMPERATURE, true)
+            peripheral.setNotify(THINGY_ENVIRONMENTAL_SERVICE, THINGY_PRESSURE, true)
         }
 
         override fun onNotificationStateUpdate(
@@ -138,6 +141,13 @@ class BluetoothHandler {
                     val batteryLevel: Int = parser.getIntValue(FORMAT_UINT8)
                     logger.info("battery level $batteryLevel")
                 }
+                THINGY_PRESSURE -> {
+                    val pressureInt : Int = parser.getIntValue(FORMAT_SINT32)
+                    val pressureDec : Int = parser.getIntValue(FORMAT_UINT8)
+                    val pressureString = "$pressureInt.$pressureDec"
+                    val pressure : Float = pressureString.toFloat()
+                    callback.onAirPressure(pressure)
+                }
             }
         }
 
@@ -221,7 +231,8 @@ class BluetoothHandler {
                 PLX_SERVICE_UUID,
                 BLP_SERVICE_UUID,
                 HRS_SERVICE_UUID,
-                GLS_SERVICE_UUID
+                GLS_SERVICE_UUID,
+                THINGY_SERVICE
             )
         )
     }
@@ -280,6 +291,12 @@ class BluetoothHandler {
         val GLS_MEASUREMENT_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002A18-0000-1000-8000-00805f9b34fb")
         val GLS_RECORD_ACCESS_POINT_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002A52-0000-1000-8000-00805f9b34fb")
         val GLS_MEASUREMENT_CONTEXT_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002A34-0000-1000-8000-00805f9b34fb")
+
+        // Thingy service
+        val THINGY_SERVICE : UUID = UUID.fromString("EF680100-9B35-4933-9B10-52FFA9740042")
+        val THINGY_ENVIRONMENTAL_SERVICE : UUID = UUID.fromString("EF680200-9B35-4933-9B10-52FFA9740042")
+        val THINGY_TEMPERATURE : UUID = UUID.fromString("EF680201-9B35-4933-9B10-52FFA9740042")
+        val THINGY_PRESSURE : UUID = UUID.fromString("EF680202-9B35-4933-9B10-52FFA9740042")
     }
 
     private val central: BluetoothCentral = BluetoothCentral(bluetoothCentralCallback, setOf(SCANOPTION_NO_NULL_NAMES))

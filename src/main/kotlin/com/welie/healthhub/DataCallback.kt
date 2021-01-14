@@ -8,4 +8,5 @@ interface DataCallback {
     fun onWeight(measurement: WeightMeasurement)
     fun onHeartRate(measurement: HeartRateMeasurement)
     fun onBloodOxygen(measurement: PulseOximeterSpotMeasurement)
+    fun onAirPressure(pressure: Float)
 }
