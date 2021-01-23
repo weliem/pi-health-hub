@@ -57,13 +57,12 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         frame.setSize(550, 350)
         frame.isVisible = true
 
-        setValue("--", "--", "")
+        updateValue("--", "--", "")
         bluetoothHandler.setDataCallback(this)
         bluetoothHandler.setFrame(frame)
     }
 
-    fun setValue(value: String, unit: String, timestamp: String) {
-        logger.info("setValue")
+    private fun updateValue(value: String, unit: String, timestamp: String) {
         SwingUtilities.invokeLater {
             val doc: StyledDocument = pane.styledDocument
             pane.setCharacterAttributes(valueStyles, true)
@@ -76,7 +75,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
 
     override fun onTemperature(measurement: TemperatureMeasurement) {
         with(measurement) {
-            setValue(
+            updateValue(
                 String.format("%.1f", temperatureValue),
                 if (unit == TemperatureUnit.Celsius) "\u00B0C" else "\u00B0F",
                 timestamp.toString()
@@ -85,10 +84,9 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
     }
 
     override fun onBloodPressure(measurement: BloodPressureMeasurement) {
-        logger.info("onBloodPressure")
         with(measurement) {
-            setValue(
-                String.format("%.0f/%0.f", systolic, diastolic),
+            updateValue(
+                String.format("%.0f/%.0f", systolic, diastolic),
                 if (isMMHG) "mmHg" else "kPa",
                 timestamp.toString()
             )
@@ -97,7 +95,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
 
     override fun onWeight(measurement: WeightMeasurement) {
         with(measurement) {
-            setValue(
+            updateValue(
                 String.format("%.1f", weight),
                 if (unit == WeightUnit.Kilograms) "Kg" else "lbs",
                 timestamp.toString()
@@ -107,17 +105,17 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
 
     override fun onHeartRate(measurement: HeartRateMeasurement) {
         with(measurement) {
-            setValue(pulse.toString(), "bpm", "")
+            updateValue(pulse.toString(), "bpm", "")
         }
     }
 
     override fun onBloodOxygen(measurement: PulseOximeterSpotMeasurement) {
         with(measurement) {
-            setValue(String.format("%.0f", spO2), "%", timestamp.toString())
+            updateValue(String.format("%.0f", spO2), "%", timestamp.toString())
         }
     }
 
     override fun onAirPressure(pressure: Float) {
-        setValue(String.format("%.2f", pressure), "hPa", Calendar.getInstance().time.toString())
+        updateValue(String.format("%.2f", pressure), "hPa", Calendar.getInstance().time.toString())
     }
 }
