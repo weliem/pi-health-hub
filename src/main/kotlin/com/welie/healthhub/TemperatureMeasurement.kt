@@ -14,11 +14,8 @@ class TemperatureMeasurement(byteArray: ByteArray) {
     override fun toString(): String {
         val df: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH)
         val formattedTimestamp: String
-        formattedTimestamp = if (timestamp != null) {
-            df.format(timestamp)
-        } else {
-            "null"
-        }
+        formattedTimestamp = df.format(timestamp)
+
         return String.format(
             Locale.ENGLISH,
             "%.1f %s (%s), at (%s)",

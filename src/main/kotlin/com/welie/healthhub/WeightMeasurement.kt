@@ -15,7 +15,7 @@ class WeightMeasurement(byteArray: ByteArray) {
 
     override fun toString(): String {
         val df: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
-        val formattedTimestamp = if (timestamp != null) df.format(timestamp) else "null"
+        val formattedTimestamp = df.format(timestamp)
 
         return String.format(
             "%.1f %s, user %d, BMI %d, height %d at (%s)",

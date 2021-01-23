@@ -35,7 +35,6 @@ class BloodPressureMeasurement(value: ByteArray) {
         val timestampPresent = flags and 0x02 > 0
         val pulseRatePresent = flags and 0x04 > 0
         val userIdPresent = flags and 0x08 > 0
-        val measurementStatusPresent = flags and 0x10 > 0
 
         // Get systolic, diastolic and mean arterial pressure
         systolic = parser.getFloatValue(BluetoothBytesParser.FORMAT_SFLOAT)
