@@ -3,7 +3,7 @@ package com.welie.healthhub
 import com.welie.blessed.*
 import com.welie.blessed.BluetoothBytesParser.FORMAT_SINT32
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
-import com.welie.blessed.BluetoothCentral.SCANOPTION_NO_NULL_NAMES
+import com.welie.blessed.BluetoothCentralManager.SCANOPTION_NO_NULL_NAMES
 import java.util.*
 import java.util.concurrent.ScheduledFuture
 import org.slf4j.Logger
@@ -186,7 +186,7 @@ class BluetoothHandler {
         timeoutFuture = handler.postDelayed({ peripheral.cancelConnection() }, 2000L)
     }
 
-    private val bluetoothCentralCallback: BluetoothCentralCallback = object : BluetoothCentralCallback() {
+    private val bluetoothCentralCallback: BluetoothCentralManagerCallback = object : BluetoothCentralManagerCallback() {
         override fun onConnectedPeripheral(peripheral: BluetoothPeripheral) {
             logger.info("connected peripheral")
         }
@@ -299,7 +299,7 @@ class BluetoothHandler {
         val THINGY_PRESSURE : UUID = UUID.fromString("EF680202-9B35-4933-9B10-52FFA9740042")
     }
 
-    private val central: BluetoothCentral = BluetoothCentral(bluetoothCentralCallback, setOf(SCANOPTION_NO_NULL_NAMES))
+    private val central: BluetoothCentralManager = BluetoothCentralManager(bluetoothCentralCallback, setOf(SCANOPTION_NO_NULL_NAMES))
 
     init {
         logger.info("initializing BluetoothCentral")
