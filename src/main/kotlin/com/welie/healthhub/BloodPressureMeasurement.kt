@@ -4,13 +4,13 @@ import com.welie.blessed.BluetoothBytesParser
 import java.util.*
 
 class BloodPressureMeasurement(value: ByteArray) {
-    var userID: Int? = null
+    val userID: Int
     val systolic: Float
     val diastolic: Float
     val meanArterialPressure: Float
-    var timestamp: Date
+    val timestamp: Date
     val isMMHG: Boolean
-    var pulseRate: Float? = null
+    val pulseRate: Float
 
     override fun toString(): String {
         return String.format(
@@ -52,14 +52,14 @@ class BloodPressureMeasurement(value: ByteArray) {
         pulseRate = if (pulseRatePresent) {
             parser.getFloatValue(BluetoothBytesParser.FORMAT_SFLOAT)
         } else {
-            null
+            0.0f
         }
 
         // Read userId
         userID = if (userIdPresent) {
             parser.getIntValue(BluetoothBytesParser.FORMAT_UINT8)
         } else {
-            null
+            0
         }
     }
 }

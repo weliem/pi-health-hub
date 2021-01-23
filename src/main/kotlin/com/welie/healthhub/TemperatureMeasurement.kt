@@ -7,9 +7,9 @@ import java.util.*
 
 class TemperatureMeasurement(byteArray: ByteArray) {
     val unit: TemperatureUnit
-    var temperatureValue: Float
-    var timestamp: Date
-    var type: TemperatureType? = null
+    val temperatureValue: Float
+    val timestamp: Date
+    val type: TemperatureType
 
     override fun toString(): String {
         val df: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH)
@@ -44,6 +44,8 @@ class TemperatureMeasurement(byteArray: ByteArray) {
         if (typePresent) {
             val typeValue = parser.getIntValue(BluetoothBytesParser.FORMAT_UINT8)
             type = TemperatureType.fromValue(typeValue)
+        } else {
+            type = TemperatureType.Unknown
         }
     }
 }
