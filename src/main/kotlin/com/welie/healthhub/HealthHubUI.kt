@@ -27,6 +27,10 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
     init {
         val frame = JFrame("Health Hub")
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setUndecorated(true);
+//        frame.setVisible(true);
+
         val cp: Container = frame.contentPane
         pane = JTextPane()
         pane.isEditable = false
