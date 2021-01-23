@@ -1,5 +1,7 @@
 package com.welie.healthhub
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import javax.swing.JFrame
 import java.awt.BorderLayout
 import java.awt.Color
@@ -19,6 +21,7 @@ import javax.swing.text.StyledDocument
 
 class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
 
+    private val logger: Logger = LoggerFactory.getLogger("HealthHubUI")
     private val overallStyles = SimpleAttributeSet()
     private val valueStyles = SimpleAttributeSet()
     private val unitStyles = SimpleAttributeSet()
@@ -81,6 +84,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
     }
 
     override fun onBloodPressure(measurement: BloodPressureMeasurement) {
+        logger.info("onBloodPressure")
         with(measurement) {
             setValue(
                 String.format("%.0f/%0.f", systolic, diastolic),
