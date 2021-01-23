@@ -63,6 +63,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
     }
 
     fun setValue(value: String, unit: String, timestamp: String) {
+        logger.info("setValue")
         SwingUtilities.invokeLater {
             val doc: StyledDocument = pane.styledDocument
             pane.setCharacterAttributes(valueStyles, true)
