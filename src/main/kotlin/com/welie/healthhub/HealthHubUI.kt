@@ -1,5 +1,6 @@
 package com.welie.healthhub
 
+import com.welie.blessed.BluetoothPeripheral
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.swing.JFrame
@@ -73,7 +74,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         }
     }
 
-    override fun onTemperature(measurement: TemperatureMeasurement) {
+    override fun onTemperature(measurement: TemperatureMeasurement, peripheral: BluetoothPeripheral) {
         with(measurement) {
             updateValue(
                 String.format("%.1f", temperatureValue),
@@ -83,17 +84,17 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         }
     }
 
-    override fun onBloodPressure(measurement: BloodPressureMeasurement) {
+    override fun onBloodPressure(measurement: BloodPressureMeasurement, peripheral: BluetoothPeripheral) {
         with(measurement) {
             updateValue(
                 String.format("%.0f/%.0f", systolic, diastolic),
-                if (isMMHG) "mmHg" else "kPa",
+                if (unit == BloodPressureUnit.MMHG) "mmHg" else "kPa",
                 timestamp.toString()
             )
         }
     }
 
-    override fun onWeight(measurement: WeightMeasurement) {
+    override fun onWeight(measurement: WeightMeasurement, peripheral: BluetoothPeripheral) {
         with(measurement) {
             updateValue(
                 String.format("%.1f", weight),
@@ -103,19 +104,29 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         }
     }
 
-    override fun onHeartRate(measurement: HeartRateMeasurement) {
+    override fun onHeartRate(measurement: HeartRateMeasurement, peripheral: BluetoothPeripheral) {
         with(measurement) {
             updateValue(pulse.toString(), "bpm", "")
         }
     }
 
-    override fun onBloodOxygen(measurement: PulseOximeterSpotMeasurement) {
+    override fun onBloodOxygen(measurement: PulseOximeterSpotMeasurement, peripheral: BluetoothPeripheral) {
         with(measurement) {
             updateValue(String.format("%.0f", spO2), "%", timestamp.toString())
         }
     }
 
-    override fun onAirPressure(pressure: Float) {
+    override fun onAirPressure(pressure: Float, peripheral: BluetoothPeripheral) {
         updateValue(String.format("%.2f", pressure), "hPa", Calendar.getInstance().time.toString())
+    }
+
+    override fun onBloodGlucose(measurement: GlucoseMeasurement, peripheral: BluetoothPeripheral) {
+        with(measurement) {
+            updateValue(
+                String.format("%.1f", value),
+                if (unit == GlucoseMeasurementUnit.MmolPerLiter) "mmol/L" else "mg/Dl",
+                timestamp.toString()
+            )
+        }
     }
 }

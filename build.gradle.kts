@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation ("ch.qos.logback:logback-core:+")
     implementation ("ch.qos.logback:logback-classic:+")
-    implementation("com.github.weliem.blessed-bluez:blessed:0.34")
+    implementation("com.github.weliem.blessed-bluez:blessed:0.36")
 }
 
 tasks.test {

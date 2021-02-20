@@ -1,65 +1,44 @@
 package com.welie.healthhub
 
 import com.welie.blessed.BluetoothBytesParser
+import com.welie.blessed.BluetoothBytesParser.FORMAT_SFLOAT
+import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import java.util.*
 
-class BloodPressureMeasurement(value: ByteArray) {
-    val userID: Int
-    val systolic: Float
-    val diastolic: Float
-    val meanArterialPressure: Float
-    val timestamp: Date
-    val isMMHG: Boolean
-    val pulseRate: Float
+data class BloodPressureMeasurement(
+    val systolic: Float,
+    val diastolic: Float,
+    val meanArterialPressure: Float,
+    val unit: BloodPressureUnit,
+    val timestamp: Date?,
+    val pulseRate: Float?,
+    val userID: Int?
+) {
+    companion object {
+        fun fromBytes(value: ByteArray): BloodPressureMeasurement {
+            val parser = BluetoothBytesParser(value)
+            val flags = parser.getIntValue(FORMAT_UINT8)
+            val unit = if (flags and 0x01 > 0) BloodPressureUnit.MMHG else BloodPressureUnit.KPA
+            val timestampPresent = flags and 0x02 > 0
+            val pulseRatePresent = flags and 0x04 > 0
+            val userIdPresent = flags and 0x08 > 0
 
-    override fun toString(): String {
-        return String.format(
-            Locale.ENGLISH,
-            "%.0f/%.0f %s, MAP %.0f, %.0f bpm, user %d at (%s)",
-            systolic,
-            diastolic,
-            if (isMMHG) "mmHg" else "kPa",
-            meanArterialPressure,
-            pulseRate,
-            userID,
-            timestamp
-        )
-    }
+            val systolic = parser.getFloatValue(FORMAT_SFLOAT)
+            val diastolic = parser.getFloatValue(FORMAT_SFLOAT)
+            val meanArterialPressure = parser.getFloatValue(FORMAT_SFLOAT)
+            val timestamp = if (timestampPresent) parser.dateTime else null
+            val pulseRate = if (pulseRatePresent) parser.getFloatValue(FORMAT_SFLOAT) else null
+            val userID = if (userIdPresent) parser.getIntValue(FORMAT_UINT8) else null
 
-    init {
-        val parser = BluetoothBytesParser(value)
-
-        // Parse the flags
-        val flags = parser.getIntValue(BluetoothBytesParser.FORMAT_UINT8)
-        isMMHG = flags and 0x01 <= 0
-        val timestampPresent = flags and 0x02 > 0
-        val pulseRatePresent = flags and 0x04 > 0
-        val userIdPresent = flags and 0x08 > 0
-
-        // Get systolic, diastolic and mean arterial pressure
-        systolic = parser.getFloatValue(BluetoothBytesParser.FORMAT_SFLOAT)
-        diastolic = parser.getFloatValue(BluetoothBytesParser.FORMAT_SFLOAT)
-        meanArterialPressure = parser.getFloatValue(BluetoothBytesParser.FORMAT_SFLOAT)
-
-        // Read timestamp
-        timestamp = if (timestampPresent) {
-            parser.dateTime
-        } else {
-            Calendar.getInstance().time
-        }
-
-        // Read pulse rate
-        pulseRate = if (pulseRatePresent) {
-            parser.getFloatValue(BluetoothBytesParser.FORMAT_SFLOAT)
-        } else {
-            0.0f
-        }
-
-        // Read userId
-        userID = if (userIdPresent) {
-            parser.getIntValue(BluetoothBytesParser.FORMAT_UINT8)
-        } else {
-            0
+            return BloodPressureMeasurement(
+                systolic = systolic,
+                diastolic = diastolic,
+                meanArterialPressure = meanArterialPressure,
+                unit = unit,
+                timestamp = timestamp,
+                pulseRate = pulseRate,
+                userID = userID
+            )
         }
     }
 }
