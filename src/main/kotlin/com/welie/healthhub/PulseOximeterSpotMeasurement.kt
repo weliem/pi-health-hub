@@ -8,8 +8,8 @@ data class PulseOximeterSpotMeasurement(
     val spO2: Float,
     val pulseRate: Float,
     val pulseAmplitudeIndex: Float?,
-    val isDeviceClockSet: Boolean,
     val timestamp: Date?,
+    val isDeviceClockSet: Boolean,
     val measurementStatus: Int?,
     val sensorStatus: Int?
 ) {

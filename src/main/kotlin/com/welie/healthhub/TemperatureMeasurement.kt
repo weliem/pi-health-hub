@@ -9,8 +9,8 @@ import com.welie.healthhub.TemperatureUnit.Fahrenheit
 import java.util.*
 
 data class TemperatureMeasurement(
-    val unit: TemperatureUnit,
     val temperatureValue: Float,
+    val unit: TemperatureUnit,
     val timestamp: Date?,
     val type: TemperatureType
 ) {

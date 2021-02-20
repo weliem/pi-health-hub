@@ -7,11 +7,11 @@ import com.welie.healthhub.GlucoseMeasurementUnit.MiligramPerDeciliter
 import com.welie.healthhub.GlucoseMeasurementUnit.MmolPerLiter
 
 data class GlucoseMeasurement(
+    var value: Float?,
     val unit: GlucoseMeasurementUnit,
     var timestamp: Date?,
     var sequenceNumber: Int,
-    var contextWillFollow: Boolean,
-    var value: Float?
+    var contextWillFollow: Boolean
 ) {
     companion object {
         fun fromBytes(value: ByteArray): GlucoseMeasurement {
