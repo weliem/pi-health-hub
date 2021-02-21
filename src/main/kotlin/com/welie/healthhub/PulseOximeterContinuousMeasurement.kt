@@ -6,13 +6,13 @@ import com.welie.blessed.BluetoothBytesParser.*
 data class PulseOximeterContinuousMeasurement(
     val spO2: Float,
     val pulseRate: Float,
-    var spO2Fast: Float?,
-    var pulseRateFast: Float?,
-    var spO2Slow: Float?,
-    var pulseRateSlow: Float?,
-    var pulseAmplitudeIndex: Float?,
-    var measurementStatus: Int?,
-    var sensorStatus: Int?
+    val spO2Fast: Float?,
+    val pulseRateFast: Float?,
+    val spO2Slow: Float?,
+    val pulseRateSlow: Float?,
+    val pulseAmplitudeIndex: Float?,
+    val measurementStatus: Int?,
+    val sensorStatus: Int?
 ) {
     companion object {
         fun fromBytes(value: ByteArray): PulseOximeterContinuousMeasurement {
