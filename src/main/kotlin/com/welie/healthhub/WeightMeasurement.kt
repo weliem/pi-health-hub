@@ -12,7 +12,7 @@ data class WeightMeasurement(
     val timestamp: Date?,
     val userID: Int?,
     val bmi: Int?,
-    val height: Int?
+    val heightInMetersOrInches: Float?
 ) {
     companion object {
         fun fromBytes(value: ByteArray): WeightMeasurement {
@@ -28,7 +28,8 @@ data class WeightMeasurement(
             val timestamp = if (timestampPresent) parser.dateTime else null
             val userID = if (userIDPresent) parser.getIntValue(FORMAT_UINT8) else null
             val bmi = if (bmiAndHeightPresent) parser.getIntValue(FORMAT_UINT16) else null
-            val height = if (bmiAndHeightPresent) parser.getIntValue(FORMAT_UINT16) else null
+            val heightMultiplier = if (unit == WeightUnit.Kilograms) 0.001f else 0.1f
+            val height = if (bmiAndHeightPresent) parser.getIntValue(FORMAT_UINT16) * heightMultiplier else null
 
             return WeightMeasurement(
                 weight = weight,
@@ -36,7 +37,7 @@ data class WeightMeasurement(
                 timestamp = timestamp,
                 userID = userID,
                 bmi = bmi,
-                height = height
+                heightInMetersOrInches = height
             )
         }
     }
