@@ -2,6 +2,7 @@ package com.welie.healthhub
 
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.gatt.*
+import com.welie.healthhub.gatt.Unit
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.swing.JFrame
@@ -79,7 +80,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         with(measurement) {
             updateValue(
                 String.format("%.1f", temperatureValue),
-                if (unit == TemperatureUnit.Celsius) "\u00B0C" else "\u00B0F",
+                if (unit == Unit.Celsius) "\u00B0C" else "\u00B0F",
                 timestamp.toString()
             )
         }
@@ -89,17 +90,25 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         with(measurement) {
             updateValue(
                 String.format("%.0f/%.0f", systolic, diastolic),
-                if (unit == BloodPressureUnit.MMHG) "mmHg" else "kPa",
+                if (unit == Unit.MMHG) "mmHg" else "kPa",
                 timestamp.toString()
             )
         }
+    }
+
+    override fun onIntermediateCuffPressure(measurement: BloodPressureMeasurement, peripheral: BluetoothPeripheral) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBloodPressureFeature(measurement: BloodPressureFeature, peripheral: BluetoothPeripheral) {
+        TODO("Not yet implemented")
     }
 
     override fun onWeight(measurement: WeightMeasurement, peripheral: BluetoothPeripheral) {
         with(measurement) {
             updateValue(
                 String.format("%.1f", weight),
-                if (unit == WeightUnit.Kilograms) "Kg" else "lbs",
+                if (unit == Unit.Kilograms) "Kg" else "lbs",
                 timestamp.toString()
             )
         }
@@ -125,7 +134,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         with(measurement) {
             updateValue(
                 String.format("%.1f", value),
-                if (unit == GlucoseMeasurementUnit.MmolPerLiter) "mmol/L" else "mg/Dl",
+                if (unit == Unit.MmolPerLiter) "mmol/L" else "mg/Dl",
                 timestamp.toString()
             )
         }
