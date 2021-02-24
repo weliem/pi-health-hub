@@ -1,16 +1,16 @@
-package com.welie.healthhub
+package com.welie.healthhub.gatt
 
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_FLOAT
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
-import com.welie.healthhub.TemperatureType.Unknown
-import com.welie.healthhub.TemperatureUnit.Celsius
-import com.welie.healthhub.TemperatureUnit.Fahrenheit
+import com.welie.healthhub.gatt.TemperatureType.Unknown
+import com.welie.healthhub.gatt.Unit.Celsius
+import com.welie.healthhub.gatt.Unit.Fahrenheit
 import java.util.*
 
 data class TemperatureMeasurement(
     val temperatureValue: Float,
-    val unit: TemperatureUnit,
+    val unit: Unit,
     val timestamp: Date?,
     val type: TemperatureType
 ) {

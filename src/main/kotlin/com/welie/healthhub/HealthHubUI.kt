@@ -1,6 +1,7 @@
 package com.welie.healthhub
 
 import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.gatt.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.swing.JFrame

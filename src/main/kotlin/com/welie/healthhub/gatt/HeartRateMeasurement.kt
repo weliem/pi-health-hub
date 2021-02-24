@@ -1,4 +1,4 @@
-package com.welie.healthhub
+package com.welie.healthhub.gatt
 
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT16

@@ -1,14 +1,14 @@
-package com.welie.healthhub
+package com.welie.healthhub.gatt
 
 import java.util.*
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
-import com.welie.healthhub.GlucoseMeasurementUnit.MiligramPerDeciliter
-import com.welie.healthhub.GlucoseMeasurementUnit.MmolPerLiter
+import com.welie.healthhub.gatt.Unit.MiligramPerDeciliter
+import com.welie.healthhub.gatt.Unit.MmolPerLiter
 
 data class GlucoseMeasurement(
     var value: Float?,
-    val unit: GlucoseMeasurementUnit,
+    val unit: Unit,
     var timestamp: Date?,
     var sequenceNumber: Int,
     var contextWillFollow: Boolean

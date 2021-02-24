@@ -2,7 +2,7 @@
  * Copyright (c) Koninklijke Philips N.V., 2017.
  * All rights reserved.
  */
-package com.welie.healthhub
+package com.welie.healthhub.gatt
 
 /**
  * Enum that contains all sensor contact feature as specified here:

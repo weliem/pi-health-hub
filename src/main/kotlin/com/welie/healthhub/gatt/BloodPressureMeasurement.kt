@@ -1,4 +1,4 @@
-package com.welie.healthhub
+package com.welie.healthhub.gatt
 
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_SFLOAT
@@ -9,7 +9,7 @@ data class BloodPressureMeasurement(
     val systolic: Float,
     val diastolic: Float,
     val meanArterialPressure: Float,
-    val unit: BloodPressureUnit,
+    val unit: Unit,
     val timestamp: Date?,
     val pulseRate: Float?,
     val userID: Int?
@@ -18,7 +18,7 @@ data class BloodPressureMeasurement(
         fun fromBytes(value: ByteArray): BloodPressureMeasurement {
             val parser = BluetoothBytesParser(value)
             val flags = parser.getIntValue(FORMAT_UINT8)
-            val unit = if (flags and 0x01 > 0) BloodPressureUnit.MMHG else BloodPressureUnit.KPA
+            val unit = if (flags and 0x01 > 0) Unit.MMHG else Unit.KPA
             val timestampPresent = flags and 0x02 > 0
             val pulseRatePresent = flags and 0x04 > 0
             val userIdPresent = flags and 0x08 > 0
