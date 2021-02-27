@@ -16,12 +16,12 @@ data class TemperatureMeasurement(
     val temperatureValue: Float,
     val unit: ObservationUnit,
     val timestamp: Date?,
-    val type: TemperatureType
+    val type: TemperatureType,
+    val createdAt: Date = Calendar.getInstance().time
 ) {
 
     fun asObservation(peripheral: BluetoothPeripheral): Observation {
-        val now = Calendar.getInstance().time
-        return Observation(temperatureValue, type.asObservationType(), unit, timestamp, null, now, peripheral.address)
+        return Observation(temperatureValue, type.asObservationType(), unit, timestamp, null, createdAt, peripheral.address)
     }
 
     private fun TemperatureType.asObservationType(): ObservationType {

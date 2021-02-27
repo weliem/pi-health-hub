@@ -2,6 +2,7 @@ package com.welie.healthhub.gatt
 
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
+import java.util.*
 
 data class PulseOximeterContinuousMeasurement(
     val spO2: Float,
@@ -12,7 +13,8 @@ data class PulseOximeterContinuousMeasurement(
     val pulseRateSlow: Float?,
     val pulseAmplitudeIndex: Float?,
     val measurementStatus: Int?,
-    val sensorStatus: Int?
+    val sensorStatus: Int?,
+    val createdAt: Date = Calendar.getInstance().time
 ) {
     companion object {
         fun fromBytes(value: ByteArray): PulseOximeterContinuousMeasurement {

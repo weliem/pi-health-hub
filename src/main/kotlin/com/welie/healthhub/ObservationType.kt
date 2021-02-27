@@ -9,6 +9,8 @@ enum class ObservationType {
     TympanicTemperature,
     RectumTemperature,
     BodyWeight,
+    BodyHeight,
+    BodyMassIndex,
     BloodGlucose,
     BloodOxygen,
     SystolicCuffPressure,

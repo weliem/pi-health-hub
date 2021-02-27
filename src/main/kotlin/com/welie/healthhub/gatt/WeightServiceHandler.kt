@@ -1,5 +1,7 @@
 package com.welie.healthhub.gatt
 
+import com.welie.blessed.BluetoothBytesParser
+import com.welie.blessed.BluetoothBytesParser.bytes2String
 import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
@@ -14,7 +16,10 @@ class WeightServiceHandler : ServiceHandler() {
     override var callback: DataCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
-    override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
+    override fun onCharacteristicsDiscovered(
+        peripheral: BluetoothPeripheral,
+        characteristics: List<BluetoothGattCharacteristic>
+    ) {
         // A&D peripherals have a DATE TIME characteristic, so write that first
         peripheral.getCharacteristic(SERVICE_UUID, DATE_TIME_CHARACTERISTIC_UUID)?.let {
             writeDateTime(peripheral, it)
@@ -23,14 +28,23 @@ class WeightServiceHandler : ServiceHandler() {
         peripheral.setNotify(SERVICE_UUID, WSS_MEASUREMENT_CHAR_UUID, true)
     }
 
-    override fun onCharacteristicChanged(peripheral: BluetoothPeripheral, value: ByteArray, characteristic: BluetoothGattCharacteristic, status: BluetoothCommandStatus) {
+    override fun onCharacteristicChanged(
+        peripheral: BluetoothPeripheral,
+        value: ByteArray,
+        characteristic: BluetoothGattCharacteristic,
+        status: BluetoothCommandStatus
+    ) {
         super.onCharacteristicChanged(peripheral, value, characteristic, status)
 
-        when(characteristic.uuid) {
-            WSS_MEASUREMENT_CHAR_UUID -> {
-                callback?.onSimpleObservation(WeightMeasurement.fromBytes(value).asObservation(peripheral))
-                startDisconnectTimer(peripheral)
+        try {
+            when (characteristic.uuid) {
+                WSS_MEASUREMENT_CHAR_UUID -> {
+                    callback?.onObservationList(WeightMeasurement.fromBytes(value).asObservationList(peripheral))
+                    startDisconnectTimer(peripheral)
+                }
             }
+        } catch (exception: Exception) {
+            logger.error("could not handle <${bytes2String(value)}> for <${characteristic.uuid}>")
         }
     }
 

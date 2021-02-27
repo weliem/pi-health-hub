@@ -8,5 +8,8 @@ enum class ObservationUnit(val notation: String) {
     Celsius("\u00B0C"),
     Fahrenheit("\u00B0F"),
     Kilograms("Kg"),
-    Pounds("lbs")
+    Pounds("lbs"),
+    KgM2("kg/m2"),
+    Meters("m"),
+    Inches("inch")
 }

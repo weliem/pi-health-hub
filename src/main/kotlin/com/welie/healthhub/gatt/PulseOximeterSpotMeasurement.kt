@@ -11,7 +11,8 @@ data class PulseOximeterSpotMeasurement(
     val timestamp: Date?,
     val isDeviceClockSet: Boolean,
     val measurementStatus: Int?,
-    val sensorStatus: Int?
+    val sensorStatus: Int?,
+    val createdAt: Date = Calendar.getInstance().time
 ) {
     companion object {
         fun fromBytes(value: ByteArray): PulseOximeterSpotMeasurement {

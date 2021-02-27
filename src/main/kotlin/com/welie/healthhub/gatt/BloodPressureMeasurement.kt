@@ -15,16 +15,16 @@ data class BloodPressureMeasurement(
     val unit: ObservationUnit,
     val timestamp: Date?,
     val pulseRate: Float?,
-    val userID: Int?
+    val userID: Int?,
+    val createdAt: Date = Calendar.getInstance().time
 ) {
 
     fun asObservationList(peripheral: BluetoothPeripheral) : List<Observation> {
-        val now = Calendar.getInstance().time
         val list = ArrayList<Observation>()
-        list.add(Observation(systolic, ObservationType.SystolicCuffPressure, unit, timestamp, userID, now, peripheral.address))
-        list.add(Observation(diastolic, ObservationType.DiastolicCuffPressure, unit, timestamp, userID, now, peripheral.address))
-        list.add(Observation(meanArterialPressure, ObservationType.MeanArterialCuffPressure, unit, timestamp, userID, now, peripheral.address))
-        list.add(Observation(pulseRate, ObservationType.HeartRate, unit, timestamp, userID, now, peripheral.address))
+        list.add(Observation(systolic, ObservationType.SystolicCuffPressure, unit, timestamp, userID, createdAt, peripheral.address))
+        list.add(Observation(diastolic, ObservationType.DiastolicCuffPressure, unit, timestamp, userID, createdAt, peripheral.address))
+        list.add(Observation(meanArterialPressure, ObservationType.MeanArterialCuffPressure, unit, timestamp, userID, createdAt, peripheral.address))
+        list.add(Observation(pulseRate, ObservationType.HeartRate, unit, timestamp, userID, createdAt, peripheral.address))
         return list
     }
 

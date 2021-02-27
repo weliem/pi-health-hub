@@ -11,7 +11,8 @@ data class GlucoseMeasurement(
     val unit: ObservationUnit,
     var timestamp: Date?,
     var sequenceNumber: Int,
-    var contextWillFollow: Boolean
+    var contextWillFollow: Boolean,
+    val createdAt: Date = Calendar.getInstance().time
 ) {
     companion object {
         fun fromBytes(value: ByteArray): GlucoseMeasurement {
