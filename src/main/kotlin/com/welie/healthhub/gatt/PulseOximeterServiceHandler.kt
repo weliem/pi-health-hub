@@ -4,12 +4,15 @@ import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.DataCallback
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
 
 class PulseOximeterServiceHandler : ServiceHandler() {
 
     override val TAG: String = "PulseOximeterServiceHandler"
     override var callback: DataCallback? = null
+    override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
         peripheral.setNotify(SERVICE_UUID, CONTINUOUS_MEASUREMENT_CHAR_UUID, true)

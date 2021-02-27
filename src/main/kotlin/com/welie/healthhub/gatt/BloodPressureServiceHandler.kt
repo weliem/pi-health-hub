@@ -4,12 +4,15 @@ import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.DataCallback
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
 
 class BloodPressureServiceHandler() : ServiceHandler() {
 
     override val TAG: String = "BloodPressureServiceHandler"
     override var callback: DataCallback? = null
+    override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
         // A&D peripherals have a DATE TIME characteristic, so write that first
@@ -29,7 +32,8 @@ class BloodPressureServiceHandler() : ServiceHandler() {
                 callback?.onBloodPressureFeature(BloodPressureFeature.fromBytes(value), peripheral)
             }
             BLOOD_PRESSURE_MEASUREMENT_CHARACTERISTIC_UUID -> {
-                callback?.onBloodPressure(BloodPressureMeasurement.fromBytes(value), peripheral)
+                //callback?.onBloodPressure(BloodPressureMeasurement.fromBytes(value), peripheral)
+                callback?.onObservationList(BloodPressureMeasurement.fromBytes(value).asObservationList(peripheral))
                 startDisconnectTimer(peripheral)
             }
             INTERMEDIATE_CUFF_PRESSURE_CHARACTERISTIC_UUID -> {

@@ -13,12 +13,11 @@ import java.util.concurrent.ScheduledFuture
 abstract class ServiceHandler {
 
     abstract val TAG: String
-   // abstract val serviceUUID: UUID
     abstract var callback: DataCallback?
+    abstract val logger: Logger
 
     private var timeoutFuture: ScheduledFuture<*>? = null
-    val logger: Logger = LoggerFactory.getLogger(TAG)
-    private val handler: Handler = Handler(TAG)
+    private val handler: Handler = Handler("ServiceHandler")
 
     /**
      * Called when notification is successfully subscribed for a characteristic.
@@ -26,7 +25,7 @@ abstract class ServiceHandler {
      * @param characteristics list of Characteristics discovered
      */
     open fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
-        logger.info(TAG, "Discovered characteristics (${characteristics.size}) for ${peripheral.name}")
+        logger.info("Discovered characteristics (${characteristics.size}) for ${peripheral.name}")
     }
 
     /**
@@ -71,7 +70,11 @@ abstract class ServiceHandler {
      * @param status status code of the write operation
      */
     open fun onCharacteristicWrite(peripheral: BluetoothPeripheral, value: ByteArray, characteristic: BluetoothGattCharacteristic, status: BluetoothCommandStatus) {
-        logger.info(TAG, "${if (status == BluetoothCommandStatus.COMMAND_SUCCESS) "SUCCESS" else "ERROR"}: Write to ${characteristic.uuid}")
+        if (status == BluetoothCommandStatus.COMMAND_SUCCESS) {
+            logger.info("success writing <${BluetoothBytesParser.bytes2String(value)}> to ${characteristic.uuid}")
+        } else {
+            logger.error("failed to write <${BluetoothBytesParser.bytes2String(value)}> to ${characteristic.uuid}")
+        }
     }
 
     fun startDisconnectTimer(peripheral: BluetoothPeripheral) {

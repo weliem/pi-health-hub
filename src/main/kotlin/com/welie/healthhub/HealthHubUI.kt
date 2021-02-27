@@ -2,7 +2,7 @@ package com.welie.healthhub
 
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.gatt.*
-import com.welie.healthhub.gatt.Unit
+import com.welie.healthhub.gatt.ObservationUnit
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.swing.JFrame
@@ -76,22 +76,29 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         }
     }
 
-    override fun onTemperature(measurement: TemperatureMeasurement, peripheral: BluetoothPeripheral) {
-        with(measurement) {
+    override fun onSimpleObservation(observation: Observation) {
+        logger.info(observation.toString())
+        with(observation) {
             updateValue(
-                String.format("%.1f", temperatureValue),
-                if (unit == Unit.Celsius) "\u00B0C" else "\u00B0F",
+                String.format("%.1f", value),
+                unit.notation,
                 timestamp.toString()
             )
         }
     }
 
-    override fun onBloodPressure(measurement: BloodPressureMeasurement, peripheral: BluetoothPeripheral) {
-        with(measurement) {
+    override fun onObservationList(observationList: List<Observation>) {
+        logger.info(observationList.toString())
+        val observationTypes = observationList.map { it.type }
+
+        // Handle observation list
+        if (observationTypes.contains(ObservationType.SystolicCuffPressure) && observationTypes.contains(ObservationType.DiastolicCuffPressure)) {
+            val systolic = requireNotNull(observationList.find { it.type == ObservationType.SystolicCuffPressure })
+            val diastolic = requireNotNull(observationList.find { it.type == ObservationType.DiastolicCuffPressure })
             updateValue(
-                String.format("%.0f/%.0f", systolic, diastolic),
-                if (unit == Unit.MMHG) "mmHg" else "kPa",
-                timestamp.toString()
+                String.format("%.0f/%.0f", systolic.value, diastolic.value),
+                systolic.unit.notation,
+                systolic.timestamp.toString()
             )
         }
     }
@@ -104,23 +111,15 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         TODO("Not yet implemented")
     }
 
-    override fun onWeight(measurement: WeightMeasurement, peripheral: BluetoothPeripheral) {
-        with(measurement) {
-            updateValue(
-                String.format("%.1f", weight),
-                if (unit == Unit.Kilograms) "Kg" else "lbs",
-                timestamp.toString()
-            )
-        }
-    }
-
     override fun onHeartRate(measurement: HeartRateMeasurement, peripheral: BluetoothPeripheral) {
+        logger.info(measurement.toString())
         with(measurement) {
             updateValue(pulse.toString(), "bpm", "")
         }
     }
 
     override fun onBloodOxygen(measurement: PulseOximeterSpotMeasurement, peripheral: BluetoothPeripheral) {
+        logger.info(measurement.toString())
         with(measurement) {
             updateValue(String.format("%.0f", spO2), "%", timestamp.toString())
         }
@@ -131,10 +130,11 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
     }
 
     override fun onBloodGlucose(measurement: GlucoseMeasurement, peripheral: BluetoothPeripheral) {
+        logger.info(measurement.toString())
         with(measurement) {
             updateValue(
                 String.format("%.1f", value),
-                if (unit == Unit.MmolPerLiter) "mmol/L" else "mg/Dl",
+                if (unit == ObservationUnit.MmolPerLiter) "mmol/L" else "mg/Dl",
                 timestamp.toString()
             )
         }

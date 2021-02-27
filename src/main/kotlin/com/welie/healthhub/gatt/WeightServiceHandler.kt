@@ -4,12 +4,15 @@ import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.DataCallback
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
 
 class WeightServiceHandler : ServiceHandler() {
 
     override val TAG: String = "WeightServiceHandler"
     override var callback: DataCallback? = null
+    override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
         // A&D peripherals have a DATE TIME characteristic, so write that first
@@ -25,7 +28,7 @@ class WeightServiceHandler : ServiceHandler() {
 
         when(characteristic.uuid) {
             WSS_MEASUREMENT_CHAR_UUID -> {
-                callback?.onWeight(WeightMeasurement.fromBytes(value), peripheral)
+                callback?.onSimpleObservation(WeightMeasurement.fromBytes(value).asObservation(peripheral))
                 startDisconnectTimer(peripheral)
             }
         }
@@ -36,5 +39,4 @@ class WeightServiceHandler : ServiceHandler() {
         val WSS_MEASUREMENT_CHAR_UUID: UUID = UUID.fromString("00002A9D-0000-1000-8000-00805f9b34fb")
         val DATE_TIME_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002a08-0000-1000-8000-00805f9b34fb")
     }
-
 }

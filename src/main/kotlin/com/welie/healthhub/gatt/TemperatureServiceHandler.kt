@@ -4,12 +4,15 @@ import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.DataCallback
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
 
 class TemperatureServiceHandler : ServiceHandler() {
 
     override val TAG: String = "TemperatureServiceHandler"
     override var callback: DataCallback? = null
+    override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
         // A&D peripherals have a DATE TIME characteristic, so write that first
@@ -25,7 +28,7 @@ class TemperatureServiceHandler : ServiceHandler() {
 
         when (characteristic.uuid) {
             TEMPERATURE_MEASUREMENT_CHARACTERISTIC_UUID -> {
-                callback?.onTemperature(TemperatureMeasurement.fromBytes(value), peripheral)
+                callback?.onSimpleObservation(TemperatureMeasurement.fromBytes(value).asObservation(peripheral))
                 startDisconnectTimer(peripheral)
             }
         }

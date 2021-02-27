@@ -3,19 +3,27 @@ package com.welie.healthhub.gatt
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT16
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
-import com.welie.healthhub.gatt.Unit.Kilograms
-import com.welie.healthhub.gatt.Unit.Pounds
+import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.ObservationType
+import com.welie.healthhub.Observation
+import com.welie.healthhub.gatt.ObservationUnit.Kilograms
+import com.welie.healthhub.gatt.ObservationUnit.Pounds
 import java.util.*
 import kotlin.math.round
 
 data class WeightMeasurement(
     val weight: Float,
-    val unit: Unit,
+    val unit: ObservationUnit,
     val timestamp: Date?,
     val userID: Int?,
     val bmi: Int?,
     val heightInMetersOrInches: Float?
 ) {
+    fun asObservation(peripheral: BluetoothPeripheral): Observation {
+        val now = Calendar.getInstance().time
+        return Observation(weight, ObservationType.BodyWeight, unit, timestamp, userID, now, peripheral.address)
+    }
+
     companion object {
         fun fromBytes(value: ByteArray): WeightMeasurement {
             val parser = BluetoothBytesParser(value)
@@ -26,7 +34,7 @@ data class WeightMeasurement(
             val bmiAndHeightPresent = flags and 0x08 > 0
 
             val weightMultiplier = if (unit == Kilograms) 0.005f else 0.01f
-            val weight = round(parser.getIntValue(FORMAT_UINT16) * weightMultiplier * 100) / 100
+            val weight = parser.getIntValue(FORMAT_UINT16) * weightMultiplier
             val timestamp = if (timestampPresent) parser.dateTime else null
             val userID = if (userIDPresent) parser.getIntValue(FORMAT_UINT8) else null
             val bmi = if (bmiAndHeightPresent) parser.getIntValue(FORMAT_UINT16) else null
@@ -34,7 +42,7 @@ data class WeightMeasurement(
             val height = if (bmiAndHeightPresent) parser.getIntValue(FORMAT_UINT16) * heightMultiplier else null
 
             return WeightMeasurement(
-                weight = weight,
+                weight = round(weight * 100) / 100,
                 unit = unit,
                 timestamp = timestamp,
                 userID = userID,
