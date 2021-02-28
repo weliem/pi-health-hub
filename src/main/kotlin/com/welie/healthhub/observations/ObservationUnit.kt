@@ -7,7 +7,7 @@ enum class ObservationUnit(val notation: String, val mdc: String) {
     Inches("inch", "MDC_DIM_INCH"),
     Kilograms("Kg", "MDC_DIM_KILO_G"),
     KgM2("kg/m2", "MDC_DIM_KG_PER_M_SQ"),
-    KPA("Kpa", "MDC_DIM_KILO_PASCAL"),
+    KPA("kPa", "MDC_DIM_KILO_PASCAL"),
     Meters("m", "MDC_DIM_M"),
     MiligramPerDeciliter("mg/dL", "MDC_DIM_MILLI_G_PER_DL"),
     MmolPerLiter("mmol/L", "MDC_DIM_MILLI_MOLE_PER_L"),
