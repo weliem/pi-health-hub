@@ -1,12 +1,12 @@
 package com.welie.healthhub
 
-import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.gatt.*
 import com.welie.healthhub.observations.Observation
+import java.util.*
 
 interface DataCallback {
     fun onObservationList(observationList: List<Observation>)
-    fun onIntermediateCuffPressure(measurement: BloodPressureMeasurement, peripheral: BluetoothPeripheral)
-    fun onBloodPressureFeature(measurement: BloodPressureFeature, peripheral: BluetoothPeripheral)
-    fun onAirPressure(pressure: Float, peripheral: BluetoothPeripheral)
+    fun onBatteryPercentage(percentage: Int, systemId: String)
+    fun onPeripheralTime(dateTime: Date, systemId: String)
+    fun onManufacturerName(manufacturer: String, systemId: String)
+    fun onModelNumber(modelNumber: String, systemId: String)
 }

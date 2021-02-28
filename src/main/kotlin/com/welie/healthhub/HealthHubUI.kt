@@ -92,17 +92,47 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
                 systolic.timestamp.toString()
             )
         }
+
+        if (observationTypes.contains(ObservationType.Temperature)) {
+            val temperature = requireNotNull(observationList.find {it.type == ObservationType.Temperature})
+            showObservation(temperature)
+        }
+
+        if (observationTypes.contains(ObservationType.BodyWeight)) {
+            val weight = requireNotNull(observationList.find {it.type == ObservationType.BodyWeight})
+            showObservation(weight)
+        }
+
+        if (observationTypes.contains(ObservationType.BloodOxygen)) {
+            val spO2 = requireNotNull(observationList.find {it.type == ObservationType.BloodOxygen})
+            showObservation(spO2)
+        }
+
+        if (observationTypes.contains(ObservationType.BloodGlucose)) {
+            val glucose = requireNotNull(observationList.find {it.type == ObservationType.BloodGlucose})
+            showObservation(glucose)
+        }
     }
 
-    override fun onIntermediateCuffPressure(measurement: BloodPressureMeasurement, peripheral: BluetoothPeripheral) {
+    override fun onBatteryPercentage(percentage: Int, systemId: String) {
+        logger.info("Battery percentage $percentage")
+    }
+
+    override fun onPeripheralTime(dateTime: Date, systemId: String) {
         TODO("Not yet implemented")
     }
 
-    override fun onBloodPressureFeature(measurement: BloodPressureFeature, peripheral: BluetoothPeripheral) {
-        TODO("Not yet implemented")
+    override fun onManufacturerName(manufacturer: String, systemId: String) {
+        logger.info("Manufacturer name: $manufacturer")
     }
 
-    override fun onAirPressure(pressure: Float, peripheral: BluetoothPeripheral) {
-        updateValue(String.format("%.2f", pressure), "hPa", Calendar.getInstance().time.toString())
+    override fun onModelNumber(modelNumber: String, systemId: String) {
+        logger.info("Model number $modelNumber")
+    }
+
+    private fun showObservation(observation: Observation) {
+        with(observation) {
+            updateValue(String.format("%.1f", value), unit.notation, timestamp.toString())
+        }
     }
 }

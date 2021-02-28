@@ -29,14 +29,14 @@ class BloodPressureServiceHandler() : ServiceHandler() {
 
         when (characteristic.uuid) {
             BLOOD_PRESSURE_FEATURE_CHARACTERISTIC_UUID -> {
-                callback?.onBloodPressureFeature(BloodPressureFeature.fromBytes(value), peripheral)
+                //callback?.onBloodPressureFeature(BloodPressureFeature.fromBytes(value), peripheral)
             }
             BLOOD_PRESSURE_MEASUREMENT_CHARACTERISTIC_UUID -> {
                 callback?.onObservationList(BloodPressureMeasurement.fromBytes(value).asObservationList(peripheral))
                 startDisconnectTimer(peripheral)
             }
             INTERMEDIATE_CUFF_PRESSURE_CHARACTERISTIC_UUID -> {
-                callback?.onIntermediateCuffPressure(BloodPressureMeasurement.fromBytes(value), peripheral)
+                //callback?.onIntermediateCuffPressure(BloodPressureMeasurement.fromBytes(value), peripheral)
             }
         }
     }

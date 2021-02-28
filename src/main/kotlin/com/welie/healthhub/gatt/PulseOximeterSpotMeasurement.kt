@@ -5,9 +5,7 @@ import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.observations.ObservationLocation
-import com.welie.healthhub.observations.ObservationType
 import com.welie.healthhub.observations.ObservationType.*
-import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import com.welie.healthhub.observations.ObservationUnit.Percent
 import java.util.*

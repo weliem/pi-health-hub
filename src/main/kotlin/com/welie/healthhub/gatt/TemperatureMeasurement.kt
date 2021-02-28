@@ -11,7 +11,7 @@ import com.welie.healthhub.observations.ObservationUnit.Celsius
 import com.welie.healthhub.observations.ObservationUnit.Fahrenheit
 import com.welie.healthhub.gatt.TemperatureType.*
 import com.welie.healthhub.observations.ObservationLocation
-import com.welie.healthhub.observations.ObservationType.Temperature
+import com.welie.healthhub.observations.ObservationType.*
 import com.welie.healthhub.observations.ObservationUnit
 import java.util.*
 
@@ -23,7 +23,14 @@ data class TemperatureMeasurement(
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
-        return listOf(Observation(temperatureValue, Temperature, unit, timestamp, type.asObservationLocation(),null, emptyList(), createdAt, peripheral.address))
+        val name = peripheral.name ?: ""
+        var finalLocation = type.asObservationLocation()
+        var finalType = if (type != Unknown) BodyTemperature else Temperature
+        if (name.startsWith("DL8740")) {
+            finalType = BodyTemperature
+            finalLocation = ObservationLocation.Ear
+        }
+        return listOf(Observation(temperatureValue, finalType, unit, timestamp, finalLocation,null, emptyList(), createdAt, peripheral.address))
     }
 
     private fun TemperatureType.asObservationLocation(): ObservationLocation {

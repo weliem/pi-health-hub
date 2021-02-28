@@ -28,7 +28,8 @@ class BluetoothHandler {
     private val peripheralCallback: BluetoothPeripheralCallback = object : BluetoothPeripheralCallback() {
 
         override fun onServicesDiscovered(peripheral: BluetoothPeripheral) {
-            peripheral.services.forEach { serviceHandlers[it.uuid]?.onCharacteristicsDiscovered(peripheral,it.characteristics) }
+            val orderedServices = orderServices(peripheral.services)
+            orderedServices.forEach { serviceHandlers[it.uuid]?.onCharacteristicsDiscovered(peripheral,it.characteristics) }
         }
 
         override fun onNotificationStateUpdate(peripheral: BluetoothPeripheral, characteristic: BluetoothGattCharacteristic, status: BluetoothCommandStatus) {
@@ -45,6 +46,26 @@ class BluetoothHandler {
             } catch (ex : Exception) {
                 logger.error("error parsing ${bytes2String(value)}")
             }
+        }
+
+        private fun orderServices(services :List<BluetoothGattService>): List<BluetoothGattService> {
+            val preferredOrder = arrayOf(DeviceInformationServiceHandler.SERVICE_UUID, CurrentTimeServiceHandler.SERVICE_UUID, BatteryServiceHandler.SERVICE_UUID)
+            val orderedServices: MutableList<BluetoothGattService> = ArrayList()
+
+            for (uuid in preferredOrder) {
+                for (service in services) {
+                    if (service.uuid == uuid) {
+                        orderedServices.add(service)
+                    }
+                }
+            }
+
+            for (service in services) {
+                if (!orderedServices.contains(service)) {
+                    orderedServices.add(service)
+                }
+            }
+            return orderedServices
         }
     }
 
@@ -108,34 +129,15 @@ class BluetoothHandler {
     companion object {
         private const val TAG = "com.welie.healthhub.BluetoothHandler"
         private val blackList: MutableList<String> = ArrayList()
-
-        // UUIDs for the Device Information service (DIS)
-        private val DIS_SERVICE_UUID: UUID = UUID.fromString("0000180A-0000-1000-8000-00805f9b34fb")
-        private val MANUFACTURER_NAME_CHARACTERISTIC_UUID: UUID =
-            UUID.fromString("00002A29-0000-1000-8000-00805f9b34fb")
-        private val MODEL_NUMBER_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002A24-0000-1000-8000-00805f9b34fb")
-
-        // UUIDs for the Current Time service (CTS)
-        private val CTS_SERVICE_UUID: UUID = UUID.fromString("00001805-0000-1000-8000-00805f9b34fb")
-        private val CURRENT_TIME_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002A2B-0000-1000-8000-00805f9b34fb")
-        private val DATE_TIME_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002a08-0000-1000-8000-00805f9b34fb")
-
-        // UUIDs for the Battery Service (BAS)
-        private val BTS_SERVICE_UUID: UUID = UUID.fromString("0000180F-0000-1000-8000-00805f9b34fb")
-        private val BATTERY_LEVEL_CHARACTERISTIC_UUID: UUID = UUID.fromString("00002A19-0000-1000-8000-00805f9b34fb")
-
-        // Thingy service
-        val THINGY_SERVICE: UUID = UUID.fromString("EF680100-9B35-4933-9B10-52FFA9740042")
-        val THINGY_ENVIRONMENTAL_SERVICE: UUID = UUID.fromString("EF680200-9B35-4933-9B10-52FFA9740042")
-        val THINGY_TEMPERATURE: UUID = UUID.fromString("EF680201-9B35-4933-9B10-52FFA9740042")
-        val THINGY_PRESSURE: UUID = UUID.fromString("EF680202-9B35-4933-9B10-52FFA9740042")
     }
 
-    private val central: BluetoothCentralManager =
-        BluetoothCentralManager(bluetoothCentralCallback, setOf(SCANOPTION_NO_NULL_NAMES))
+    private val central: BluetoothCentralManager = BluetoothCentralManager(bluetoothCentralCallback, setOf(SCANOPTION_NO_NULL_NAMES))
 
     init {
         logger.info("initializing BluetoothCentral")
+        serviceHandlers[DeviceInformationServiceHandler.SERVICE_UUID] = DeviceInformationServiceHandler()
+        serviceHandlers[CurrentTimeServiceHandler.SERVICE_UUID] = CurrentTimeServiceHandler()
+        serviceHandlers[BatteryServiceHandler.SERVICE_UUID] = BatteryServiceHandler()
         serviceHandlers[BloodPressureServiceHandler.SERVICE_UUID] = BloodPressureServiceHandler()
         serviceHandlers[TemperatureServiceHandler.SERVICE_UUID] = TemperatureServiceHandler()
         serviceHandlers[WeightServiceHandler.SERVICE_UUID] = WeightServiceHandler()
