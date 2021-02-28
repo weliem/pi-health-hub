@@ -14,9 +14,14 @@ fun BluetoothPeripheral.isANDPeripheral(): Boolean {
     return name.contains("352BLE") || name.contains("651BLE") || name.contains("201BLE")
 }
 
+fun BluetoothPeripheral.isPhilipsThermometer(): Boolean {
+    val name = this.name ?: ""
+    return name.startsWith("Philips ear thermometer") || name.startsWith("SCH740")
+}
+
 fun BluetoothPeripheral.reconnectionDelay(): Long {
     val name = this.name ?: ""
-    return if (name.contains("TAIDOC")) 40000
+    return if (name.contains("TAIDOC TD1241")) 40000
     else 10000
 }
 

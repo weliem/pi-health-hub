@@ -98,6 +98,11 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
             showObservation(temperature)
         }
 
+        if (observationTypes.contains(ObservationType.BodyTemperature)) {
+            val temperature = requireNotNull(observationList.find {it.type == ObservationType.BodyTemperature})
+            showObservation(temperature)
+        }
+
         if (observationTypes.contains(ObservationType.BodyWeight)) {
             val weight = requireNotNull(observationList.find {it.type == ObservationType.BodyWeight})
             showObservation(weight)
