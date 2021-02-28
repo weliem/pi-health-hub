@@ -4,8 +4,13 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_SFLOAT
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.Observation
-import com.welie.healthhub.ObservationType
+import com.welie.healthhub.isANDPeripheral
+import com.welie.healthhub.measurementLocation
+import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.ObservationLocation
+import com.welie.healthhub.observations.ObservationType.*
+import com.welie.healthhub.observations.ObservationUnit
+import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import java.util.*
 
 data class BloodPressureMeasurement(
@@ -20,12 +25,15 @@ data class BloodPressureMeasurement(
 ) {
 
     fun asObservationList(peripheral: BluetoothPeripheral) : List<Observation> {
-        val list = ArrayList<Observation>()
-        list.add(Observation(systolic, ObservationType.SystolicCuffPressure, unit, timestamp, userID, createdAt, peripheral.address))
-        list.add(Observation(diastolic, ObservationType.DiastolicCuffPressure, unit, timestamp, userID, createdAt, peripheral.address))
-        list.add(Observation(meanArterialPressure, ObservationType.MeanArterialCuffPressure, unit, timestamp, userID, createdAt, peripheral.address))
-        list.add(Observation(pulseRate, ObservationType.HeartRate, unit, timestamp, userID, createdAt, peripheral.address))
-        return list
+        val location = peripheral.measurementLocation()
+        val systemId = peripheral.address
+
+        return listOf(
+            Observation(systolic, SystolicCuffPressure, unit, timestamp, location, userID, createdAt, systemId),
+            Observation(diastolic, DiastolicCuffPressure, unit, timestamp, location, userID, createdAt, systemId),
+            Observation(meanArterialPressure, MeanArterialCuffPressure, unit, timestamp, location, userID, createdAt, systemId),
+            Observation(pulseRate, HeartRate, BeatsPerMinute, timestamp, location, userID, createdAt, systemId)
+        )
     }
 
     companion object {

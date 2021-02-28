@@ -4,9 +4,11 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT16
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.ObservationType
-import com.welie.healthhub.Observation
-import com.welie.healthhub.gatt.ObservationUnit.*
+import com.welie.healthhub.observations.ObservationType.*
+import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.ObservationLocation.*
+import com.welie.healthhub.observations.ObservationUnit
+import com.welie.healthhub.observations.ObservationUnit.*
 import java.util.*
 import kotlin.math.round
 
@@ -21,9 +23,9 @@ data class WeightMeasurement(
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         val observations = ArrayList<Observation>()
-        observations.add(Observation(weight, ObservationType.BodyWeight, unit, timestamp, userID, createdAt, peripheral.address))
-        bmi?.let { observations.add(Observation(it, ObservationType.BodyMassIndex, KgM2, timestamp, userID, createdAt, peripheral.address)) }
-        heightInMetersOrInches?.let { observations.add(Observation(it, ObservationType.BodyMassIndex, if(unit==Kilograms) Meters else Inches, timestamp, userID, createdAt, peripheral.address)) }
+        observations.add(Observation(weight, BodyWeight, unit, timestamp, Other, userID, createdAt, peripheral.address))
+        bmi?.let { observations.add(Observation(it, BodyMassIndex, KgM2, timestamp,Other, userID, createdAt, peripheral.address)) }
+        heightInMetersOrInches?.let { observations.add(Observation(it, BodyHeight, if(unit==Kilograms) Meters else Inches, timestamp, Other, userID, createdAt, peripheral.address)) }
         return observations
     }
 

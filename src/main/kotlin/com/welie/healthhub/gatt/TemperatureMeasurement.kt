@@ -4,12 +4,15 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_FLOAT
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.ObservationType
-import com.welie.healthhub.Observation
+import com.welie.healthhub.observations.ObservationType
+import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.gatt.TemperatureType.Unknown
-import com.welie.healthhub.gatt.ObservationUnit.Celsius
-import com.welie.healthhub.gatt.ObservationUnit.Fahrenheit
+import com.welie.healthhub.observations.ObservationUnit.Celsius
+import com.welie.healthhub.observations.ObservationUnit.Fahrenheit
 import com.welie.healthhub.gatt.TemperatureType.*
+import com.welie.healthhub.observations.ObservationLocation
+import com.welie.healthhub.observations.ObservationType.Temperature
+import com.welie.healthhub.observations.ObservationUnit
 import java.util.*
 
 data class TemperatureMeasurement(
@@ -19,17 +22,22 @@ data class TemperatureMeasurement(
     val type: TemperatureType,
     val createdAt: Date = Calendar.getInstance().time
 ) {
-
-    fun asObservation(peripheral: BluetoothPeripheral): Observation {
-        return Observation(temperatureValue, type.asObservationType(), unit, timestamp, null, createdAt, peripheral.address)
+    fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        return listOf(Observation(temperatureValue, Temperature, unit, timestamp, type.asObservationLocation(),null, createdAt, peripheral.address))
     }
 
-    private fun TemperatureType.asObservationType(): ObservationType {
+    private fun TemperatureType.asObservationLocation(): ObservationLocation {
         return when(this) {
-            Armpit -> ObservationType.ArmpitTemperature
-            Ear -> ObservationType.EarTemperature
-            Tympanum -> ObservationType.TympanicTemperature
-            else -> ObservationType.Temperature
+            Armpit -> ObservationLocation.Armpit
+            Ear -> ObservationLocation.Ear
+            Tympanum -> ObservationLocation.Tympanum
+            Unknown -> ObservationLocation.Unknown
+            Body -> ObservationLocation.Body
+            Finger -> ObservationLocation.Finger
+            GastroIntestinalTract -> ObservationLocation.GastroIntestinalTract
+            Mouth -> ObservationLocation.Mouth
+            Rectum -> ObservationLocation.Rectum
+            Toe -> ObservationLocation.Toe
         }
     }
 

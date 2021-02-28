@@ -2,6 +2,7 @@ package com.welie.healthhub
 
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.gatt.*
+import com.welie.healthhub.observations.Observation
 
 interface DataCallback {
     fun onSimpleObservation(observation: Observation)

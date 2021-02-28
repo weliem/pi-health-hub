@@ -3,6 +3,11 @@ package com.welie.healthhub.gatt
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT16
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
+import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.ObservationLocation.Other
+import com.welie.healthhub.observations.ObservationType.HeartRate
+import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -13,6 +18,12 @@ data class HeartRateMeasurement(
     val sensorContactStatus: SensorContactFeature,
     val createdAt: Date = Calendar.getInstance().time
 ) {
+    fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        if (sensorContactStatus == SensorContactFeature.SupportedNoContact) return emptyList()
+
+        return listOf(Observation(pulse.toFloat(), HeartRate, BeatsPerMinute, createdAt, Other, null, createdAt, peripheral.address ))
+    }
+
     companion object {
         fun fromBytes(value: ByteArray): HeartRateMeasurement {
             val parser = BluetoothBytesParser(value)

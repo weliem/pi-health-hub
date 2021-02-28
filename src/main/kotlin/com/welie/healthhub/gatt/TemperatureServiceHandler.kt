@@ -28,7 +28,7 @@ class TemperatureServiceHandler : ServiceHandler() {
 
         when (characteristic.uuid) {
             TEMPERATURE_MEASUREMENT_CHARACTERISTIC_UUID -> {
-                callback?.onSimpleObservation(TemperatureMeasurement.fromBytes(value).asObservation(peripheral))
+                callback?.onObservationList(TemperatureMeasurement.fromBytes(value).asObservationList(peripheral))
                 startDisconnectTimer(peripheral)
             }
         }

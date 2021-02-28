@@ -32,7 +32,6 @@ class BloodPressureServiceHandler() : ServiceHandler() {
                 callback?.onBloodPressureFeature(BloodPressureFeature.fromBytes(value), peripheral)
             }
             BLOOD_PRESSURE_MEASUREMENT_CHARACTERISTIC_UUID -> {
-                //callback?.onBloodPressure(BloodPressureMeasurement.fromBytes(value), peripheral)
                 callback?.onObservationList(BloodPressureMeasurement.fromBytes(value).asObservationList(peripheral))
                 startDisconnectTimer(peripheral)
             }

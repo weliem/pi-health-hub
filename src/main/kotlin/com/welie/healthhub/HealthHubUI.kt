@@ -2,7 +2,9 @@ package com.welie.healthhub
 
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.gatt.*
-import com.welie.healthhub.gatt.ObservationUnit
+import com.welie.healthhub.observations.ObservationUnit
+import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.ObservationType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.swing.JFrame

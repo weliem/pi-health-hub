@@ -2,6 +2,14 @@ package com.welie.healthhub.gatt
 
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
+import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.ObservationLocation
+import com.welie.healthhub.observations.ObservationType
+import com.welie.healthhub.observations.ObservationType.*
+import com.welie.healthhub.observations.ObservationUnit
+import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
+import com.welie.healthhub.observations.ObservationUnit.Percent
 import java.util.*
 
 data class PulseOximeterSpotMeasurement(
@@ -14,6 +22,23 @@ data class PulseOximeterSpotMeasurement(
     val sensorStatus: Int?,
     val createdAt: Date = Calendar.getInstance().time
 ) {
+    fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        val systemId = peripheral.address
+        val location = ObservationLocation.Finger
+
+        val observations = ArrayList<Observation>()
+        if (spO2 in 0.0f..100.0f) {
+            observations.add(Observation(spO2, BloodOxygen, Percent, timestamp, location, null, createdAt, systemId))
+        }
+        if (pulseRate in 0.0f..250.0f) {
+            observations.add(Observation(pulseRate, HeartRate, BeatsPerMinute, timestamp, location, null, createdAt, systemId))
+        }
+        pulseAmplitudeIndex?.let {
+            observations.add(Observation(it, PulseAmplitudeIndex, Percent, timestamp, location, null, createdAt, systemId))
+        }
+        return observations
+    }
+
     companion object {
         fun fromBytes(value: ByteArray): PulseOximeterSpotMeasurement {
             val parser = BluetoothBytesParser(value)

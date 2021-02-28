@@ -24,13 +24,12 @@ class PulseOximeterServiceHandler : ServiceHandler() {
 
         when(characteristic.uuid) {
             SPOT_MEASUREMENT_CHAR_UUID -> {
-                callback?.onBloodOxygen(PulseOximeterSpotMeasurement.fromBytes(value), peripheral)
+                callback?.onObservationList(PulseOximeterSpotMeasurement.fromBytes(value).asObservationList(peripheral))
                 startDisconnectTimer(peripheral)
             }
             CONTINUOUS_MEASUREMENT_CHAR_UUID -> {
                 // later
             }
-
         }
     }
 

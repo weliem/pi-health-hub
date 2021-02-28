@@ -35,7 +35,7 @@ class GlucoseServiceHandler: ServiceHandler() {
 
         when(characteristic.uuid) {
             MEASUREMENT_CHARACTERISTIC_UUID -> {
-                callback?.onBloodGlucose(GlucoseMeasurement.fromBytes(value), peripheral)
+                callback?.onObservationList(GlucoseMeasurement.fromBytes(value).asObservationList(peripheral))
                 startDisconnectTimer(peripheral)
             }
         }

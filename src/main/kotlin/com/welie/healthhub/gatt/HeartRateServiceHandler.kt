@@ -23,7 +23,7 @@ class HeartRateServiceHandler : ServiceHandler() {
 
         when(characteristic.uuid) {
             HEARTRATE_MEASUREMENT_CHARACTERISTIC_UUID -> {
-                callback?.onHeartRate(HeartRateMeasurement.fromBytes(value), peripheral)
+                callback?.onObservationList(HeartRateMeasurement.fromBytes(value).asObservationList(peripheral))
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.welie.healthhub
 
 import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.observations.ObservationLocation
 
 fun BluetoothPeripheral.turnOffAllNotifications() {
     // Turn off notifications for all characteristics that are notifying
@@ -17,4 +18,15 @@ fun BluetoothPeripheral.reconnectionDelay(): Long {
     val name = this.name ?: ""
     return if (name.contains("TAIDOC")) 40000
     else 10000
+}
+
+fun BluetoothPeripheral.measurementLocation(): ObservationLocation {
+    val name = this.name ?: ""
+    if (name.contains("61BLE")) {
+        return ObservationLocation.Arm
+    } else if(name.contains("201BLE")) {
+        return ObservationLocation.Armpit
+    } else {
+        return ObservationLocation.Unknown
+    }
 }

@@ -1,6 +1,5 @@
-package com.welie.healthhub
+package com.welie.healthhub.observations
 
-import com.welie.healthhub.gatt.ObservationUnit
 import java.util.*
 
 data class Observation(
@@ -8,6 +7,7 @@ data class Observation(
     val type: ObservationType,
     val unit: ObservationUnit,
     val timestamp: Date?,
+    val location: ObservationLocation,
     val userId: Int?,
     val receivedTimestamp: Date,
     val systemId: String

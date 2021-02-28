@@ -3,8 +3,14 @@ package com.welie.healthhub.gatt
 import java.util.*
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
-import com.welie.healthhub.gatt.ObservationUnit.MiligramPerDeciliter
-import com.welie.healthhub.gatt.ObservationUnit.MmolPerLiter
+import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.ObservationLocation
+import com.welie.healthhub.observations.ObservationLocation.Finger
+import com.welie.healthhub.observations.ObservationType
+import com.welie.healthhub.observations.ObservationUnit
+import com.welie.healthhub.observations.ObservationUnit.MiligramPerDeciliter
+import com.welie.healthhub.observations.ObservationUnit.MmolPerLiter
 
 data class GlucoseMeasurement(
     var value: Float?,
@@ -14,6 +20,12 @@ data class GlucoseMeasurement(
     var contextWillFollow: Boolean,
     val createdAt: Date = Calendar.getInstance().time
 ) {
+    fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        return listOf(
+            Observation(value, ObservationType.BloodGlucose, unit, timestamp, Finger, null, createdAt, peripheral.address)
+        )
+    }
+
     companion object {
         fun fromBytes(value: ByteArray): GlucoseMeasurement {
             val parser = BluetoothBytesParser(value)
