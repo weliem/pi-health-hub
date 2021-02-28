@@ -10,6 +10,7 @@ import com.welie.healthhub.gatt.TemperatureType.Unknown
 import com.welie.healthhub.observations.ObservationUnit.Celsius
 import com.welie.healthhub.observations.ObservationUnit.Fahrenheit
 import com.welie.healthhub.gatt.TemperatureType.*
+import com.welie.healthhub.isPhilipsThermometer
 import com.welie.healthhub.observations.ObservationLocation
 import com.welie.healthhub.observations.ObservationType.*
 import com.welie.healthhub.observations.ObservationUnit
@@ -26,7 +27,7 @@ data class TemperatureMeasurement(
         val name = peripheral.name ?: ""
         var finalLocation = type.asObservationLocation()
         var finalType = if (type != Unknown) BodyTemperature else Temperature
-        if (name.startsWith("DL8740")) {
+        if (peripheral.isPhilipsThermometer()) {
             finalType = BodyTemperature
             finalLocation = ObservationLocation.Ear
         }

@@ -27,8 +27,8 @@ class BluetoothHandler {
 
     private val peripheralCallback: BluetoothPeripheralCallback = object : BluetoothPeripheralCallback() {
 
-        override fun onServicesDiscovered(peripheral: BluetoothPeripheral) {
-            val orderedServices = orderServices(peripheral.services)
+        override fun onServicesDiscovered(peripheral: BluetoothPeripheral, services: MutableList<BluetoothGattService>) {
+            val orderedServices = orderServices(services)
             orderedServices.forEach { serviceHandlers[it.uuid]?.onCharacteristicsDiscovered(peripheral,it.characteristics) }
         }
 
