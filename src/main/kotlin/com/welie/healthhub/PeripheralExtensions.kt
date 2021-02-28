@@ -22,6 +22,7 @@ fun BluetoothPeripheral.isPhilipsThermometer(): Boolean {
 fun BluetoothPeripheral.reconnectionDelay(): Long {
     val name = this.name ?: ""
     return if (name.contains("TAIDOC TD1241")) 40000
+    else if(name.contains("51-102")) 23000
     else 10000
 }
 
