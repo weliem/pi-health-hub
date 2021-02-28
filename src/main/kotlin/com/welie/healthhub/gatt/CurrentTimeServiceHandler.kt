@@ -1,5 +1,7 @@
 package com.welie.healthhub.gatt
 
+import com.welie.blessed.BluetoothBytesParser
+import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.DataCallback
@@ -14,6 +16,20 @@ class CurrentTimeServiceHandler : ServiceHandler() {
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
         super.onCharacteristicsDiscovered(peripheral, characteristics)
+
+        peripheral.getCharacteristic(SERVICE_UUID, CURRENT_TIME_CHARACTERISTIC_UUID)?.let {
+            writeCurrentTime(peripheral, it)
+        }
+        peripheral.readCharacteristic(SERVICE_UUID, CURRENT_TIME_CHARACTERISTIC_UUID)
+    }
+
+    override fun onCharacteristicChanged(peripheral: BluetoothPeripheral, value: ByteArray, characteristic: BluetoothGattCharacteristic, status: BluetoothCommandStatus) {
+        super.onCharacteristicChanged(peripheral, value, characteristic, status)
+
+        val parser = BluetoothBytesParser(value)
+        when(characteristic.uuid) {
+            CURRENT_TIME_CHARACTERISTIC_UUID -> callback?.onPeripheralTime(parser.dateTime, peripheral.address)
+        }
     }
 
     companion object {

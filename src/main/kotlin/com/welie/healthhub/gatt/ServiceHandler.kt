@@ -5,7 +5,6 @@ import com.welie.healthhub.DataCallback
 import com.welie.healthhub.isANDPeripheral
 import com.welie.healthhub.turnOffAllNotifications
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ScheduledFuture
 
@@ -86,6 +85,12 @@ abstract class ServiceHandler {
     fun writeDateTime(peripheral: BluetoothPeripheral, characteristic: BluetoothGattCharacteristic) {
         val parser = BluetoothBytesParser()
         parser.setDateTime(Calendar.getInstance())
+        peripheral.writeCharacteristic(characteristic, parser.value, BluetoothGattCharacteristic.WriteType.WITH_RESPONSE)
+    }
+
+    fun writeCurrentTime(peripheral: BluetoothPeripheral, characteristic: BluetoothGattCharacteristic) {
+        val parser = BluetoothBytesParser()
+        parser.setCurrentTime(Calendar.getInstance())
         peripheral.writeCharacteristic(characteristic, parser.value, BluetoothGattCharacteristic.WriteType.WITH_RESPONSE)
     }
 }
