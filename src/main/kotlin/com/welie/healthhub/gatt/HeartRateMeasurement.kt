@@ -5,7 +5,8 @@ import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT16
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.observations.Observation
-import com.welie.healthhub.observations.ObservationLocation.Other
+import com.welie.healthhub.observations.ObservationLocation
+import com.welie.healthhub.observations.ObservationLocation.Unknown
 import com.welie.healthhub.observations.ObservationType.HeartRate
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import java.util.*
@@ -21,7 +22,7 @@ data class HeartRateMeasurement(
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         if (sensorContactStatus == SensorContactFeature.SupportedNoContact) return emptyList()
 
-        return listOf(Observation(pulse.toFloat(), HeartRate, BeatsPerMinute, createdAt, Other, null, emptyList(), createdAt, peripheral.address ))
+        return listOf(Observation(pulse.toFloat(), HeartRate, BeatsPerMinute, createdAt, Unknown, null, emptyList(), createdAt, peripheral.address ))
     }
 
     companion object {

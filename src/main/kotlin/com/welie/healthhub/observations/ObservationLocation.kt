@@ -9,7 +9,6 @@ enum class ObservationLocation() {
     Finger,
     GastroIntestinalTract,
     Mouth,
-    Other,
     Rectum,
     Toe,
     Tympanum,
