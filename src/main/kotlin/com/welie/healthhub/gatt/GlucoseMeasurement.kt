@@ -13,14 +13,16 @@ import com.welie.healthhub.observations.ObservationUnit.MiligramPerDeciliter
 import com.welie.healthhub.observations.ObservationUnit.MmolPerLiter
 
 data class GlucoseMeasurement(
-    var value: Float?,
+    val value: Float?,
     val unit: ObservationUnit,
-    var timestamp: Date?,
-    var sequenceNumber: Int,
-    var contextWillFollow: Boolean,
+    val timestamp: Date?,
+    val sequenceNumber: Int,
+    val contextWillFollow: Boolean,
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        if (value == null) return emptyList()
+
         return listOf(
             Observation(value, ObservationType.BloodGlucose, unit, timestamp, Finger, null, emptyList(), createdAt, peripheral.address)
         )
