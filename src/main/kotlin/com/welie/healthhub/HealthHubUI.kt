@@ -78,17 +78,6 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         }
     }
 
-    override fun onSimpleObservation(observation: Observation) {
-        logger.info(observation.toString())
-        with(observation) {
-            updateValue(
-                String.format("%.1f", value),
-                unit.notation,
-                timestamp.toString()
-            )
-        }
-    }
-
     override fun onObservationList(observationList: List<Observation>) {
         logger.info(observationList.toString())
         val observationTypes = observationList.map { it.type }
@@ -113,32 +102,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         TODO("Not yet implemented")
     }
 
-    override fun onHeartRate(measurement: HeartRateMeasurement, peripheral: BluetoothPeripheral) {
-        logger.info(measurement.toString())
-        with(measurement) {
-            updateValue(pulse.toString(), "bpm", "")
-        }
-    }
-
-    override fun onBloodOxygen(measurement: PulseOximeterSpotMeasurement, peripheral: BluetoothPeripheral) {
-        logger.info(measurement.toString())
-        with(measurement) {
-            updateValue(String.format("%.0f", spO2), "%", timestamp.toString())
-        }
-    }
-
     override fun onAirPressure(pressure: Float, peripheral: BluetoothPeripheral) {
         updateValue(String.format("%.2f", pressure), "hPa", Calendar.getInstance().time.toString())
-    }
-
-    override fun onBloodGlucose(measurement: GlucoseMeasurement, peripheral: BluetoothPeripheral) {
-        logger.info(measurement.toString())
-        with(measurement) {
-            updateValue(
-                String.format("%.1f", value),
-                if (unit == ObservationUnit.MmolPerLiter) "mmol/L" else "mg/Dl",
-                timestamp.toString()
-            )
-        }
     }
 }

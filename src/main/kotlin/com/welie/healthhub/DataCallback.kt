@@ -5,12 +5,8 @@ import com.welie.healthhub.gatt.*
 import com.welie.healthhub.observations.Observation
 
 interface DataCallback {
-    fun onSimpleObservation(observation: Observation)
     fun onObservationList(observationList: List<Observation>)
     fun onIntermediateCuffPressure(measurement: BloodPressureMeasurement, peripheral: BluetoothPeripheral)
     fun onBloodPressureFeature(measurement: BloodPressureFeature, peripheral: BluetoothPeripheral)
-    fun onHeartRate(measurement: HeartRateMeasurement, peripheral: BluetoothPeripheral)
-    fun onBloodOxygen(measurement: PulseOximeterSpotMeasurement, peripheral: BluetoothPeripheral)
-    fun onBloodGlucose(measurement: GlucoseMeasurement, peripheral: BluetoothPeripheral)
     fun onAirPressure(pressure: Float, peripheral: BluetoothPeripheral)
 }
