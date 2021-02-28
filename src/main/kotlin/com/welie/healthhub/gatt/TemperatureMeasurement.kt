@@ -31,7 +31,10 @@ data class TemperatureMeasurement(
             finalType = BodyTemperature
             finalLocation = ObservationLocation.Ear
         }
-        return listOf(Observation(temperatureValue, finalType, unit, timestamp, finalLocation,null, emptyList(), createdAt, peripheral.address))
+
+        return if (temperatureValue in -200.0f..200.0f) {
+            listOf(Observation(temperatureValue, finalType, unit, timestamp, finalLocation, null, emptyList(), createdAt, peripheral.address))
+        } else emptyList()
     }
 
     private fun TemperatureType.asObservationLocation(): ObservationLocation {

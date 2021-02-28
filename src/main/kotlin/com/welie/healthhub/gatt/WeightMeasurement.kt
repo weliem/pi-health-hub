@@ -23,9 +23,19 @@ data class WeightMeasurement(
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         val observations = ArrayList<Observation>()
-        observations.add(Observation(weight, BodyWeight, unit, timestamp, Unknown, userID,emptyList(), createdAt, peripheral.address))
-        bmi?.let { observations.add(Observation(it, BodyMassIndex, KgM2, timestamp,Unknown, userID,emptyList(), createdAt, peripheral.address)) }
-        heightInMetersOrInches?.let { observations.add(Observation(it, BodyHeight, if(unit==Kilograms) Meters else Inches, timestamp, Unknown, userID,emptyList(), createdAt, peripheral.address)) }
+        if (weight in 0.0f..600.0f) {
+            observations.add(Observation(weight, BodyWeight, unit, timestamp, Unknown, userID, emptyList(), createdAt, peripheral.address))
+        }
+        bmi?.let {
+            if (it in 0.0f..50.0f) {
+                observations.add(Observation(it, BodyMassIndex, KgM2, timestamp, Unknown, userID, emptyList(), createdAt, peripheral.address))
+            }
+        }
+        heightInMetersOrInches?.let {
+            if (it in 0.0f..250.0f) {
+                observations.add(Observation(it, BodyHeight, if (unit == Kilograms) Meters else Inches, timestamp, Unknown, userID, emptyList(), createdAt, peripheral.address))
+            }
+        }
         return observations
     }
 
