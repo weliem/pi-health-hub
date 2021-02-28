@@ -28,13 +28,13 @@ data class PulseOximeterSpotMeasurement(
 
         val observations = ArrayList<Observation>()
         if (spO2 in 0.0f..100.0f) {
-            observations.add(Observation(spO2, BloodOxygen, Percent, timestamp, location, null, createdAt, systemId))
+            observations.add(Observation(spO2, BloodOxygen, Percent, timestamp, location, null, emptyList(), createdAt, systemId))
         }
         if (pulseRate in 0.0f..250.0f) {
-            observations.add(Observation(pulseRate, HeartRate, BeatsPerMinute, timestamp, location, null, createdAt, systemId))
+            observations.add(Observation(pulseRate, HeartRate, BeatsPerMinute, timestamp, location, null, emptyList(), createdAt, systemId))
         }
         pulseAmplitudeIndex?.let {
-            observations.add(Observation(it, PulseAmplitudeIndex, Percent, timestamp, location, null, createdAt, systemId))
+            observations.add(Observation(it, PulseAmplitudeIndex, Percent, timestamp, location, null, emptyList(), createdAt, systemId))
         }
         return observations
     }

@@ -23,7 +23,7 @@ data class TemperatureMeasurement(
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
-        return listOf(Observation(temperatureValue, Temperature, unit, timestamp, type.asObservationLocation(),null, createdAt, peripheral.address))
+        return listOf(Observation(temperatureValue, Temperature, unit, timestamp, type.asObservationLocation(),null, emptyList(), createdAt, peripheral.address))
     }
 
     private fun TemperatureType.asObservationLocation(): ObservationLocation {

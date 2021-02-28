@@ -22,7 +22,7 @@ data class GlucoseMeasurement(
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         return listOf(
-            Observation(value, ObservationType.BloodGlucose, unit, timestamp, Finger, null, createdAt, peripheral.address)
+            Observation(value, ObservationType.BloodGlucose, unit, timestamp, Finger, null, emptyList(), createdAt, peripheral.address)
         )
     }
 

@@ -9,6 +9,7 @@ data class Observation(
     val timestamp: Date?,
     val location: ObservationLocation,
     val userId: Int?,
+    val status: List<ObservationStatus>,
     val receivedTimestamp: Date,
     val systemId: String
 )

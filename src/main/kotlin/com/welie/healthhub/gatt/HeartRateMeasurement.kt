@@ -21,7 +21,7 @@ data class HeartRateMeasurement(
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         if (sensorContactStatus == SensorContactFeature.SupportedNoContact) return emptyList()
 
-        return listOf(Observation(pulse.toFloat(), HeartRate, BeatsPerMinute, createdAt, Other, null, createdAt, peripheral.address ))
+        return listOf(Observation(pulse.toFloat(), HeartRate, BeatsPerMinute, createdAt, Other, null, emptyList(), createdAt, peripheral.address ))
     }
 
     companion object {

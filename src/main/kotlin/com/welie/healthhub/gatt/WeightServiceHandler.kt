@@ -16,9 +16,7 @@ class WeightServiceHandler : ServiceHandler() {
     override var callback: DataCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
-    override fun onCharacteristicsDiscovered(
-        peripheral: BluetoothPeripheral,
-        characteristics: List<BluetoothGattCharacteristic>
+    override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>
     ) {
         // A&D peripherals have a DATE TIME characteristic, so write that first
         peripheral.getCharacteristic(SERVICE_UUID, DATE_TIME_CHARACTERISTIC_UUID)?.let {
@@ -28,11 +26,7 @@ class WeightServiceHandler : ServiceHandler() {
         peripheral.setNotify(SERVICE_UUID, WSS_MEASUREMENT_CHAR_UUID, true)
     }
 
-    override fun onCharacteristicChanged(
-        peripheral: BluetoothPeripheral,
-        value: ByteArray,
-        characteristic: BluetoothGattCharacteristic,
-        status: BluetoothCommandStatus
+    override fun onCharacteristicChanged(peripheral: BluetoothPeripheral, value: ByteArray, characteristic: BluetoothGattCharacteristic, status: BluetoothCommandStatus
     ) {
         super.onCharacteristicChanged(peripheral, value, characteristic, status)
 
@@ -44,7 +38,7 @@ class WeightServiceHandler : ServiceHandler() {
                 }
             }
         } catch (exception: Exception) {
-            logger.error("could not handle <${bytes2String(value)}> for <${characteristic.uuid}>")
+            logger.error("could not parse <${bytes2String(value)}> for <${characteristic.uuid}>")
         }
     }
 
