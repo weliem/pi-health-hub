@@ -5,12 +5,12 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.observations.Observation
-import com.welie.healthhub.observations.ObservationLocation
 import com.welie.healthhub.observations.ObservationLocation.Finger
 import com.welie.healthhub.observations.ObservationType
 import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.ObservationUnit.MiligramPerDeciliter
 import com.welie.healthhub.observations.ObservationUnit.MmolPerLiter
+import com.welie.healthhub.sensorType
 
 data class GlucoseMeasurement(
     val value: Float?,
@@ -24,7 +24,15 @@ data class GlucoseMeasurement(
         if (value == null) return emptyList()
 
         return listOf(
-            Observation(value, ObservationType.BloodGlucose, unit, timestamp, Finger, null, emptyList(), createdAt, peripheral.address)
+            Observation(
+                value = value,
+                type = ObservationType.BloodGlucoseConcentration,
+                unit = unit,
+                timestamp = timestamp,
+                location = Finger,
+                sensorType = peripheral.sensorType(),
+                receivedTimestamp = createdAt,
+                systemId = peripheral.address)
         )
     }
 

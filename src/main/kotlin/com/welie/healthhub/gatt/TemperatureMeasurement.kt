@@ -4,7 +4,6 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_FLOAT
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.observations.ObservationType
 import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.gatt.TemperatureType.Unknown
 import com.welie.healthhub.observations.ObservationUnit.Celsius
@@ -14,6 +13,7 @@ import com.welie.healthhub.isPhilipsThermometer
 import com.welie.healthhub.observations.ObservationLocation
 import com.welie.healthhub.observations.ObservationType.*
 import com.welie.healthhub.observations.ObservationUnit
+import com.welie.healthhub.sensorType
 import java.util.*
 
 data class TemperatureMeasurement(
@@ -24,7 +24,6 @@ data class TemperatureMeasurement(
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
-        val name = peripheral.name ?: ""
         var finalLocation = type.asObservationLocation()
         var finalType = if (type != Unknown) BodyTemperature else Temperature
         if (peripheral.isPhilipsThermometer()) {
@@ -33,12 +32,23 @@ data class TemperatureMeasurement(
         }
 
         return if (temperatureValue in -200.0f..200.0f) {
-            listOf(Observation(temperatureValue, finalType, unit, timestamp, finalLocation, null, emptyList(), createdAt, peripheral.address))
+            listOf(
+                Observation(
+                    value = temperatureValue,
+                    type = finalType,
+                    unit = unit,
+                    timestamp = timestamp,
+                    location = finalLocation,
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemId = peripheral.address
+                )
+            )
         } else emptyList()
     }
 
     private fun TemperatureType.asObservationLocation(): ObservationLocation {
-        return when(this) {
+        return when (this) {
             Armpit -> ObservationLocation.Armpit
             Ear -> ObservationLocation.Ear
             Tympanum -> ObservationLocation.Tympanum

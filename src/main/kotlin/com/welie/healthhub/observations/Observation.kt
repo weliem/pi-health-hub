@@ -8,8 +8,8 @@ data class Observation(
     val unit: ObservationUnit,
     val timestamp: Date?,
     val location: ObservationLocation,
-    val userId: Int?,
-    val status: List<ObservationStatus>,
+    val sensorType: SensorType,
+    val userId: Int? = null,
     val receivedTimestamp: Date,
     val systemId: String
 )

@@ -5,6 +5,7 @@ enum class ObservationLocation() {
     Arm,
     Armpit,
     Body,
+    Chest,
     Ear,
     Finger,
     GastroIntestinalTract,

@@ -2,6 +2,7 @@ package com.welie.healthhub
 
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.observations.ObservationLocation
+import com.welie.healthhub.observations.SensorType
 
 fun BluetoothPeripheral.turnOffAllNotifications() {
     // Turn off notifications for all characteristics that are notifying
@@ -28,11 +29,35 @@ fun BluetoothPeripheral.reconnectionDelay(): Long {
 
 fun BluetoothPeripheral.measurementLocation(): ObservationLocation {
     val name = this.name ?: ""
-    if (name.contains("61BLE")) {
+    if (name.contains("651BLE")) {
         return ObservationLocation.Arm
     } else if(name.contains("201BLE")) {
         return ObservationLocation.Armpit
+    } else if(name.startsWith("H7") || name.startsWith("H10")) {
+        return ObservationLocation.Chest
     } else {
         return ObservationLocation.Unknown
     }
+}
+
+fun BluetoothPeripheral.sensorType(): SensorType {
+    val name = this.name ?: ""
+
+    if (name.startsWith("H7") || name.startsWith("H9") || name.startsWith("H10")) {
+        return SensorType.EcgSensor
+    }
+
+    if (name.startsWith("OH1") || name.startsWith("Nonin")) {
+        return SensorType.PggSensor
+    }
+
+    if (isPhilipsThermometer() || name.startsWith("TAIDOC TD1241")) {
+        return SensorType.InfraRedSensor
+    }
+
+    if (name.startsWith("352BLE") || name.startsWith("51-102")) {
+        return SensorType.LoadCell
+    }
+
+    return SensorType.Unknown
 }

@@ -8,6 +8,7 @@ import com.welie.healthhub.observations.ObservationLocation
 import com.welie.healthhub.observations.ObservationType.*
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import com.welie.healthhub.observations.ObservationUnit.Percent
+import com.welie.healthhub.sensorType
 import java.util.*
 
 data class PulseOximeterSpotMeasurement(
@@ -26,13 +27,46 @@ data class PulseOximeterSpotMeasurement(
 
         val observations = ArrayList<Observation>()
         if (spO2 in 0.0f..100.0f) {
-            observations.add(Observation(spO2, BloodOxygen, Percent, timestamp, location, null, emptyList(), createdAt, systemId))
+            observations.add(
+                Observation(
+                    value = spO2,
+                    type = BloodOxygenSaturation,
+                    unit = Percent,
+                    timestamp = timestamp,
+                    location = location,
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemId = systemId
+                )
+            )
         }
         if (pulseRate in 0.0f..250.0f) {
-            observations.add(Observation(pulseRate, HeartRate, BeatsPerMinute, timestamp, location, null, emptyList(), createdAt, systemId))
+            observations.add(
+                Observation(
+                    value = pulseRate,
+                    type = HeartRate,
+                    unit = BeatsPerMinute,
+                    timestamp = timestamp,
+                    location = location,
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemId = systemId
+                )
+            )
         }
         pulseAmplitudeIndex?.let {
-            observations.add(Observation(it, PulseAmplitudeIndex, Percent, timestamp, location, null, emptyList(), createdAt, systemId))
+            observations.add(
+                Observation(
+                    value = it,
+                    type = PulseAmplitudeIndex,
+                    unit = Percent,
+                    timestamp = timestamp,
+                    location = location,
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemId = systemId
+                )
+            )
         }
         return observations
     }

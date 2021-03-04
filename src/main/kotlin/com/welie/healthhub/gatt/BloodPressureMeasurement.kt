@@ -3,14 +3,12 @@ package com.welie.healthhub.gatt
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.isANDPeripheral
 import com.welie.healthhub.measurementLocation
 import com.welie.healthhub.observations.Observation
-import com.welie.healthhub.observations.ObservationLocation
-import com.welie.healthhub.observations.ObservationStatus
 import com.welie.healthhub.observations.ObservationType.*
 import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
+import com.welie.healthhub.sensorType
 import java.util.*
 
 data class BloodPressureMeasurement(
@@ -24,25 +22,71 @@ data class BloodPressureMeasurement(
     val measurementStatus: BloodPressureMeasurementStatus?,
     val createdAt: Date = Calendar.getInstance().time
 ) {
-
-    fun asObservationList(peripheral: BluetoothPeripheral) : List<Observation> {
+    fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         measurementStatus?.let {
             if (measurementStatus.isBodyMovementDetected ||
                 measurementStatus.isImproperMeasurementPosition ||
-                    measurementStatus.isCuffTooLoose)
-                        return emptyList()
+                measurementStatus.isCuffTooLoose
+            )
+                return emptyList()
         }
 
         val location = peripheral.measurementLocation()
         val systemId = peripheral.address
-        val status = if (measurementStatus!=null && measurementStatus.isIrregularPulseDetected) listOf(ObservationStatus.IrregularPulseDetected) else emptyList()
 
         val observations = ArrayList<Observation>()
-        observations.add(Observation(systolic, SystolicCuffPressure, unit, timestamp, location, userID, emptyList(), createdAt, systemId))
-        observations.add(Observation(diastolic, DiastolicCuffPressure, unit, timestamp, location, userID, emptyList(), createdAt, systemId))
-        observations.add(Observation(meanArterialPressure, MeanArterialCuffPressure, unit, timestamp, location, userID, emptyList(), createdAt, systemId))
+        observations.add(
+            Observation(
+                value = systolic,
+                type = SystolicPressure,
+                unit = unit,
+                timestamp = timestamp,
+                location = location,
+                userId = userID,
+                sensorType = peripheral.sensorType(),
+                receivedTimestamp = createdAt,
+                systemId = systemId
+            )
+        )
+        observations.add(
+            Observation(
+                value = diastolic,
+                type = DiastolicPressure,
+                unit = unit,
+                timestamp = timestamp,
+                location = location,
+                userId = userID,
+                sensorType = peripheral.sensorType(),
+                receivedTimestamp = createdAt,
+                systemId = systemId
+            )
+        )
+        observations.add(
+            Observation(
+                value = meanArterialPressure,
+                type = MeanArterialPressure,
+                unit = unit,
+                timestamp = timestamp, location = location,
+                userId = userID,
+                sensorType = peripheral.sensorType(),
+                receivedTimestamp = createdAt,
+                systemId = systemId
+            )
+        )
         pulseRate?.let {
-            observations.add(Observation(pulseRate, HeartRate, BeatsPerMinute, timestamp, location, userID, status, createdAt, systemId))
+            observations.add(
+                Observation(
+                    value = pulseRate,
+                    type = HeartRate,
+                    unit = BeatsPerMinute,
+                    timestamp = timestamp,
+                    location = location,
+                    userId = userID,
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemId = systemId
+                )
+            )
         }
         return observations
     }
@@ -63,7 +107,7 @@ data class BloodPressureMeasurement(
             val timestamp = if (timestampPresent) parser.dateTime else null
             val pulseRate = if (pulseRatePresent) parser.getFloatValue(FORMAT_SFLOAT) else null
             val userID = if (userIdPresent) parser.getIntValue(FORMAT_UINT8) else null
-            val status = if(measurementStatusPresent)  BloodPressureMeasurementStatus(parser.getIntValue(FORMAT_UINT16)) else null
+            val status = if (measurementStatusPresent) BloodPressureMeasurementStatus(parser.getIntValue(FORMAT_UINT16)) else null
 
             return BloodPressureMeasurement(
                 systolic = systolic,

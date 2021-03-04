@@ -1,8 +1,6 @@
 package com.welie.healthhub
 
-import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.gatt.*
-import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.observations.ObservationType
 import org.slf4j.Logger
@@ -83,9 +81,9 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
         val observationTypes = observationList.map { it.type }
 
         // Handle observation list
-        if (observationTypes.contains(ObservationType.SystolicCuffPressure) && observationTypes.contains(ObservationType.DiastolicCuffPressure)) {
-            val systolic = requireNotNull(observationList.find { it.type == ObservationType.SystolicCuffPressure })
-            val diastolic = requireNotNull(observationList.find { it.type == ObservationType.DiastolicCuffPressure })
+        if (observationTypes.contains(ObservationType.SystolicPressure) && observationTypes.contains(ObservationType.DiastolicPressure)) {
+            val systolic = requireNotNull(observationList.find { it.type == ObservationType.SystolicPressure })
+            val diastolic = requireNotNull(observationList.find { it.type == ObservationType.DiastolicPressure })
             updateValue(
                 String.format("%.0f/%.0f", systolic.value, diastolic.value),
                 systolic.unit.notation,
@@ -108,13 +106,13 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
             showObservation(weight)
         }
 
-        if (observationTypes.contains(ObservationType.BloodOxygen)) {
-            val spO2 = requireNotNull(observationList.find {it.type == ObservationType.BloodOxygen})
+        if (observationTypes.contains(ObservationType.BloodOxygenSaturation)) {
+            val spO2 = requireNotNull(observationList.find {it.type == ObservationType.BloodOxygenSaturation})
             showObservation(spO2)
         }
 
-        if (observationTypes.contains(ObservationType.BloodGlucose)) {
-            val glucose = requireNotNull(observationList.find {it.type == ObservationType.BloodGlucose})
+        if (observationTypes.contains(ObservationType.BloodGlucoseConcentration)) {
+            val glucose = requireNotNull(observationList.find {it.type == ObservationType.BloodGlucoseConcentration})
             showObservation(glucose)
         }
     }

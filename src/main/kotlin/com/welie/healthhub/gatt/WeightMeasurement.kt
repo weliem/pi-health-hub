@@ -9,6 +9,7 @@ import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.observations.ObservationLocation.*
 import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.ObservationUnit.*
+import com.welie.healthhub.sensorType
 import java.util.*
 import kotlin.math.round
 
@@ -24,16 +25,52 @@ data class WeightMeasurement(
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         val observations = ArrayList<Observation>()
         if (weight in 0.0f..600.0f) {
-            observations.add(Observation(weight, BodyWeight, unit, timestamp, Unknown, userID, emptyList(), createdAt, peripheral.address))
+            observations.add(
+                Observation(
+                    value = weight,
+                    type = BodyWeight,
+                    unit = unit,
+                    timestamp = timestamp,
+                    location = Unknown,
+                    userId = userID,
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemId = peripheral.address
+                )
+            )
         }
         bmi?.let {
             if (it in 0.0f..50.0f) {
-                observations.add(Observation(it, BodyMassIndex, KgM2, timestamp, Unknown, userID, emptyList(), createdAt, peripheral.address))
+                observations.add(
+                    Observation(
+                        value = it,
+                        type = BodyMassIndex,
+                        unit = KgM2,
+                        timestamp = timestamp,
+                        location = Unknown,
+                        userId = userID,
+                        sensorType = peripheral.sensorType(),
+                        receivedTimestamp = createdAt,
+                        systemId = peripheral.address
+                    )
+                )
             }
         }
         heightInMetersOrInches?.let {
             if (it in 0.0f..250.0f) {
-                observations.add(Observation(it, BodyHeight, if (unit == Kilograms) Meters else Inches, timestamp, Unknown, userID, emptyList(), createdAt, peripheral.address))
+                observations.add(
+                    Observation(
+                        value = it,
+                        type = BodyHeight,
+                        unit = if (unit == Kilograms) Meters else Inches,
+                        timestamp = timestamp,
+                        location = Unknown,
+                        userId = userID,
+                        sensorType = peripheral.sensorType(),
+                        receivedTimestamp = createdAt,
+                        systemId = peripheral.address
+                    )
+                )
             }
         }
         return observations
