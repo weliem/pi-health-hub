@@ -26,6 +26,8 @@ data class TemperatureMeasurement(
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         var finalLocation = type.asObservationLocation()
         var finalType = if (type != Unknown) BodyTemperature else Temperature
+
+        // Peripheral specific corrections
         if (peripheral.isPhilipsThermometer()) {
             finalType = BodyTemperature
             finalLocation = ObservationLocation.Ear

@@ -5,7 +5,7 @@ enum class SensorType() {
     Unknown,
     ManualInput,
     Algorithm,
-    PggSensor,
+    PpgSensor,
     EcgSensor,
     PressureCuff,
     LoadCell,
@@ -14,5 +14,6 @@ enum class SensorType() {
     Accelerometer,
     InertialMeasurementUnit,
     Gyroscope,
-    BioImpedanceSensor
+    BioImpedanceSensor,
+    Thermistor
 }

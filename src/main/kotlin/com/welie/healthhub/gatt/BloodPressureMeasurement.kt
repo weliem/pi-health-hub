@@ -31,9 +31,6 @@ data class BloodPressureMeasurement(
                 return emptyList()
         }
 
-        val location = peripheral.measurementLocation()
-        val systemId = peripheral.address
-
         val observations = ArrayList<Observation>()
         observations.add(
             Observation(
@@ -41,11 +38,11 @@ data class BloodPressureMeasurement(
                 type = SystolicPressure,
                 unit = unit,
                 timestamp = timestamp,
-                location = location,
+                location = peripheral.measurementLocation(),
                 userId = userID,
                 sensorType = peripheral.sensorType(),
                 receivedTimestamp = createdAt,
-                systemId = systemId
+                systemId = peripheral.address
             )
         )
         observations.add(
@@ -54,11 +51,11 @@ data class BloodPressureMeasurement(
                 type = DiastolicPressure,
                 unit = unit,
                 timestamp = timestamp,
-                location = location,
+                location = peripheral.measurementLocation(),
                 userId = userID,
                 sensorType = peripheral.sensorType(),
                 receivedTimestamp = createdAt,
-                systemId = systemId
+                systemId = peripheral.address
             )
         )
         observations.add(
@@ -66,11 +63,12 @@ data class BloodPressureMeasurement(
                 value = meanArterialPressure,
                 type = MeanArterialPressure,
                 unit = unit,
-                timestamp = timestamp, location = location,
+                timestamp = timestamp,
+                location = peripheral.measurementLocation(),
                 userId = userID,
                 sensorType = peripheral.sensorType(),
                 receivedTimestamp = createdAt,
-                systemId = systemId
+                systemId = peripheral.address
             )
         )
         pulseRate?.let {
@@ -80,11 +78,11 @@ data class BloodPressureMeasurement(
                     type = HeartRate,
                     unit = BeatsPerMinute,
                     timestamp = timestamp,
-                    location = location,
+                    location = peripheral.measurementLocation(),
                     userId = userID,
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = systemId
+                    systemId = peripheral.address
                 )
             )
         }

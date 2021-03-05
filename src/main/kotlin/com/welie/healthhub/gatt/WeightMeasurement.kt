@@ -31,7 +31,7 @@ data class WeightMeasurement(
                     type = BodyWeight,
                     unit = unit,
                     timestamp = timestamp,
-                    location = Unknown,
+                    location = Foot,
                     userId = userID,
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,

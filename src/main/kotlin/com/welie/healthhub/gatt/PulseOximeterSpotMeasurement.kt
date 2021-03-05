@@ -3,6 +3,7 @@ package com.welie.healthhub.gatt
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.measurementLocation
 import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.observations.ObservationLocation
 import com.welie.healthhub.observations.ObservationType.*
@@ -22,9 +23,6 @@ data class PulseOximeterSpotMeasurement(
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
-        val systemId = peripheral.address
-        val location = ObservationLocation.Finger
-
         val observations = ArrayList<Observation>()
         if (spO2 in 0.0f..100.0f) {
             observations.add(
@@ -33,10 +31,10 @@ data class PulseOximeterSpotMeasurement(
                     type = BloodOxygenSaturation,
                     unit = Percent,
                     timestamp = timestamp,
-                    location = location,
+                    location = peripheral.measurementLocation(),
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = systemId
+                    systemId = peripheral.address
                 )
             )
         }
@@ -47,10 +45,10 @@ data class PulseOximeterSpotMeasurement(
                     type = HeartRate,
                     unit = BeatsPerMinute,
                     timestamp = timestamp,
-                    location = location,
+                    location = peripheral.measurementLocation(),
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = systemId
+                    systemId = peripheral.address
                 )
             )
         }
@@ -61,10 +59,10 @@ data class PulseOximeterSpotMeasurement(
                     type = PulseAmplitudeIndex,
                     unit = Percent,
                     timestamp = timestamp,
-                    location = location,
+                    location = peripheral.measurementLocation(),
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = systemId
+                    systemId = peripheral.address
                 )
             )
         }

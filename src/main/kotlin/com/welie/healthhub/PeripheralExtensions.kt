@@ -87,8 +87,9 @@ fun BluetoothPeripheral.measurementLocation(): ObservationLocation {
 fun BluetoothPeripheral.sensorType(): SensorType {
     return when {
         isPolarH7() || isPolarH10() -> SensorType.EcgSensor
-        isPolarOH1() || isNonin3230() -> SensorType.PggSensor
+        isPolarOH1() || isNonin3230() -> SensorType.PpgSensor
         isPhilipsThermometer() || isTaidocThermometer1241() -> SensorType.InfraRedSensor
+        isAndThermometer() -> SensorType.Thermistor
         isAndScale() || isIndieHealthScale() -> SensorType.LoadCell
         else -> SensorType.Unknown
     }
