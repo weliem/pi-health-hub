@@ -1,8 +1,9 @@
 package com.welie.healthhub
 
-import com.welie.healthhub.gatt.*
 import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.observations.ObservationType
+import com.welie.healthhub.observations.QuantityType
+import com.welie.healthhub.observations.SystemInfoStore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.swing.JFrame
@@ -78,59 +79,60 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
 
     override fun onObservationList(observationList: List<Observation>) {
         logger.info(observationList.toString())
-        val observationTypes = observationList.map { it.type }
+        val quantityTypes = observationList.map { it.quantityType }
+        val displaybleTypes = setOf(QuantityType.Saturation, QuantityType.Concentration, QuantityType.Frequency, QuantityType.Mass, QuantityType.Temperature)
 
         // Handle observation list
-        if (observationTypes.contains(ObservationType.SystolicPressure) && observationTypes.contains(ObservationType.DiastolicPressure)) {
-            val systolic = requireNotNull(observationList.find { it.type == ObservationType.SystolicPressure })
-            val diastolic = requireNotNull(observationList.find { it.type == ObservationType.DiastolicPressure })
+        if (quantityTypes.contains(QuantityType.SystolicPressure) && quantityTypes.contains(QuantityType.DiastolicPressure)) {
+            val systolic = requireNotNull(observationList.find { it.quantityType == QuantityType.SystolicPressure })
+            val diastolic = requireNotNull(observationList.find { it.quantityType == QuantityType.DiastolicPressure })
             updateValue(
                 String.format("%.0f/%.0f", systolic.value, diastolic.value),
                 systolic.unit.notation,
                 systolic.timestamp.toString()
             )
-        }
-
-        if (observationTypes.contains(ObservationType.Temperature)) {
-            val temperature = requireNotNull(observationList.find {it.type == ObservationType.Temperature})
-            showObservation(temperature)
-        }
-
-        if (observationTypes.contains(ObservationType.BodyTemperature)) {
-            val temperature = requireNotNull(observationList.find {it.type == ObservationType.BodyTemperature})
-            showObservation(temperature)
-        }
-
-        if (observationTypes.contains(ObservationType.BodyWeight)) {
-            val weight = requireNotNull(observationList.find {it.type == ObservationType.BodyWeight})
-            showObservation(weight)
-        }
-
-        if (observationTypes.contains(ObservationType.BloodOxygenSaturation)) {
-            val spO2 = requireNotNull(observationList.find {it.type == ObservationType.BloodOxygenSaturation})
-            showObservation(spO2)
-        }
-
-        if (observationTypes.contains(ObservationType.BloodGlucoseConcentration)) {
-            val glucose = requireNotNull(observationList.find {it.type == ObservationType.BloodGlucoseConcentration})
-            showObservation(glucose)
+        } else {
+            observationList.forEach {
+                if (displaybleTypes.contains(it.quantityType)) {
+                    showObservation(it)
+                }
+            }
         }
     }
 
     override fun onBatteryPercentage(percentage: Int, systemId: String) {
         logger.info("Battery percentage $percentage")
+        SystemInfoStore.get(systemId)?.batteryLevel = percentage
     }
 
     override fun onPeripheralTime(dateTime: Date, systemId: String) {
-        TODO("Not yet implemented")
+        SystemInfoStore.get(systemId)?.dateTime = dateTime
     }
 
     override fun onManufacturerName(manufacturer: String, systemId: String) {
         logger.info("Manufacturer name: $manufacturer")
+        SystemInfoStore.get(systemId)?.manufacturer = manufacturer
     }
 
     override fun onModelNumber(modelNumber: String, systemId: String) {
         logger.info("Model number $modelNumber")
+        SystemInfoStore.get(systemId)?.model = modelNumber
+    }
+
+    override fun onSerialNumber(serialNumber: String, systemId: String) {
+        SystemInfoStore.get(systemId)?.serialNumber = serialNumber
+    }
+
+    override fun onFirmwareRevision(firmwareRevision: String, systemId: String) {
+        SystemInfoStore.get(systemId)?.firmwareVersion = firmwareRevision
+    }
+
+    override fun onHardwareRevision(hardwareRevision: String, systemId: String) {
+        SystemInfoStore.get(systemId)?.hardwareVersion = hardwareRevision
+    }
+
+    override fun onSoftwareRevision(softwareRevision: String, systemId: String) {
+        SystemInfoStore.get(systemId)?.softwareVersion = softwareRevision
     }
 
     private fun showObservation(observation: Observation) {

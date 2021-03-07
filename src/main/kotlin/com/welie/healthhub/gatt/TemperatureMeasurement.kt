@@ -4,15 +4,11 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_FLOAT
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.observations.Observation
-import com.welie.healthhub.gatt.TemperatureType.Unknown
 import com.welie.healthhub.observations.ObservationUnit.Celsius
 import com.welie.healthhub.observations.ObservationUnit.Fahrenheit
 import com.welie.healthhub.gatt.TemperatureType.*
 import com.welie.healthhub.isPhilipsThermometer
-import com.welie.healthhub.observations.ObservationLocation
-import com.welie.healthhub.observations.ObservationType.*
-import com.welie.healthhub.observations.ObservationUnit
+import com.welie.healthhub.observations.*
 import com.welie.healthhub.sensorType
 import java.util.*
 
@@ -24,12 +20,13 @@ data class TemperatureMeasurement(
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        val systemInfo = requireNotNull(SystemInfoStore.get(peripheral.address))
         var finalLocation = type.asObservationLocation()
-        var finalType = if (type != Unknown) BodyTemperature else Temperature
+        var finalSubject = if (type != Unknown) ObservationSubject.Body else ObservationSubject.Unknown
 
         // Peripheral specific corrections
         if (peripheral.isPhilipsThermometer()) {
-            finalType = BodyTemperature
+            finalSubject = ObservationSubject.Body
             finalLocation = ObservationLocation.Ear
         }
 
@@ -37,13 +34,14 @@ data class TemperatureMeasurement(
             listOf(
                 Observation(
                     value = temperatureValue,
-                    type = finalType,
                     unit = unit,
+                    subject = finalSubject,
+                    quantityType = QuantityType.Temperature,
                     timestamp = timestamp,
                     location = finalLocation,
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = peripheral.address
+                    systemInfo = systemInfo
                 )
             )
         } else emptyList()

@@ -4,10 +4,8 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT16
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.observations.ObservationType.*
-import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.*
 import com.welie.healthhub.observations.ObservationLocation.*
-import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.ObservationUnit.*
 import com.welie.healthhub.sensorType
 import java.util.*
@@ -23,19 +21,22 @@ data class WeightMeasurement(
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        val systemInfo = requireNotNull(SystemInfoStore.get(peripheral.address))
+
         val observations = ArrayList<Observation>()
         if (weight in 0.0f..600.0f) {
             observations.add(
                 Observation(
                     value = weight,
-                    type = BodyWeight,
                     unit = unit,
+                    subject = ObservationSubject.Body,
+                    quantityType = QuantityType.Mass,
                     timestamp = timestamp,
                     location = Foot,
                     userId = userID,
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = peripheral.address
+                    systemInfo = systemInfo
                 )
             )
         }
@@ -44,14 +45,15 @@ data class WeightMeasurement(
                 observations.add(
                     Observation(
                         value = it,
-                        type = BodyMassIndex,
                         unit = KgM2,
+                        subject = ObservationSubject.Body,
+                        quantityType = QuantityType.LengthMassRatio,
                         timestamp = timestamp,
-                        location = Unknown,
+                        location = Foot,
                         userId = userID,
                         sensorType = peripheral.sensorType(),
                         receivedTimestamp = createdAt,
-                        systemId = peripheral.address
+                        systemInfo = systemInfo
                     )
                 )
             }
@@ -61,14 +63,15 @@ data class WeightMeasurement(
                 observations.add(
                     Observation(
                         value = it,
-                        type = BodyHeight,
                         unit = if (unit == Kilograms) Meters else Inches,
+                        subject = ObservationSubject.Body,
+                        quantityType = QuantityType.Length,
                         timestamp = timestamp,
                         location = Unknown,
                         userId = userID,
                         sensorType = peripheral.sensorType(),
                         receivedTimestamp = createdAt,
-                        systemId = peripheral.address
+                        systemInfo = systemInfo
                     )
                 )
             }

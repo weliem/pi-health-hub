@@ -4,10 +4,8 @@ import java.util.*
 import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.*
 import com.welie.healthhub.observations.ObservationLocation.Finger
-import com.welie.healthhub.observations.ObservationType
-import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.ObservationUnit.MiligramPerDeciliter
 import com.welie.healthhub.observations.ObservationUnit.MmolPerLiter
 import com.welie.healthhub.sensorType
@@ -22,17 +20,21 @@ data class GlucoseMeasurement(
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         if (value == null) return emptyList()
+        val systemInfo = requireNotNull(SystemInfoStore.get(peripheral.address))
 
         return listOf(
             Observation(
                 value = value,
-                type = ObservationType.BloodGlucoseConcentration,
                 unit = unit,
+                subject = ObservationSubject.Glucose,
+                quantityType = QuantityType.Concentration,
+                volumeOf = VolumeTypes.ArterialBlood,
                 timestamp = timestamp,
                 location = Finger,
                 sensorType = peripheral.sensorType(),
                 receivedTimestamp = createdAt,
-                systemId = peripheral.address)
+                systemInfo = systemInfo
+            )
         )
     }
 

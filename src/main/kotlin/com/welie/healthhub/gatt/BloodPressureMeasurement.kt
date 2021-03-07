@@ -4,9 +4,8 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.measurementLocation
-import com.welie.healthhub.observations.Observation
+import com.welie.healthhub.observations.*
 import com.welie.healthhub.observations.ObservationType.*
-import com.welie.healthhub.observations.ObservationUnit
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import com.welie.healthhub.sensorType
 import java.util.*
@@ -31,60 +30,73 @@ data class BloodPressureMeasurement(
                 return emptyList()
         }
 
+        val systemInfo = requireNotNull(SystemInfoStore.get(peripheral.address))
         val observations = ArrayList<Observation>()
-        observations.add(
-            Observation(
-                value = systolic,
-                type = SystolicPressure,
-                unit = unit,
-                timestamp = timestamp,
-                location = peripheral.measurementLocation(),
-                userId = userID,
-                sensorType = peripheral.sensorType(),
-                receivedTimestamp = createdAt,
-                systemId = peripheral.address
-            )
-        )
-        observations.add(
-            Observation(
-                value = diastolic,
-                type = DiastolicPressure,
-                unit = unit,
-                timestamp = timestamp,
-                location = peripheral.measurementLocation(),
-                userId = userID,
-                sensorType = peripheral.sensorType(),
-                receivedTimestamp = createdAt,
-                systemId = peripheral.address
-            )
-        )
-        observations.add(
-            Observation(
-                value = meanArterialPressure,
-                type = MeanArterialPressure,
-                unit = unit,
-                timestamp = timestamp,
-                location = peripheral.measurementLocation(),
-                userId = userID,
-                sensorType = peripheral.sensorType(),
-                receivedTimestamp = createdAt,
-                systemId = peripheral.address
-            )
-        )
-        pulseRate?.let {
+        if (systolic in 50.0f..250.0f) {
             observations.add(
                 Observation(
-                    value = pulseRate,
-                    type = HeartRate,
-                    unit = BeatsPerMinute,
+                    value = systolic,
+                    unit = unit,
+                    subject = ObservationSubject.Blood,
+                    quantityType = QuantityType.SystolicPressure,
                     timestamp = timestamp,
                     location = peripheral.measurementLocation(),
                     userId = userID,
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = peripheral.address
+                    systemInfo = systemInfo
                 )
             )
+        }
+        if (diastolic in 0.0f..150.0f) {
+            observations.add(
+                Observation(
+                    value = diastolic,
+                    unit = unit,
+                    subject = ObservationSubject.Blood,
+                    quantityType = QuantityType.DiastolicPressure,
+                    timestamp = timestamp,
+                    location = peripheral.measurementLocation(),
+                    userId = userID,
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemInfo = systemInfo
+                )
+            )
+        }
+        if (meanArterialPressure in 0.0f..150.0f)
+        observations.add(
+            Observation(
+                value = meanArterialPressure,
+                unit = unit,
+                subject = ObservationSubject.Blood,
+                quantityType = QuantityType.MeanPressure,
+                timestamp = timestamp,
+                location = peripheral.measurementLocation(),
+                userId = userID,
+                sensorType = peripheral.sensorType(),
+                receivedTimestamp = createdAt,
+                systemInfo = systemInfo
+            )
+        )
+
+        pulseRate?.let {
+            if (it in 20.0f..250.0f) {
+                observations.add(
+                    Observation(
+                        value = pulseRate,
+                        unit = BeatsPerMinute,
+                        subject = ObservationSubject.HeartBeat,
+                        quantityType = QuantityType.Frequency,
+                        timestamp = timestamp,
+                        location = peripheral.measurementLocation(),
+                        userId = userID,
+                        sensorType = peripheral.sensorType(),
+                        receivedTimestamp = createdAt,
+                        systemInfo = systemInfo
+                    )
+                )
+            }
         }
         return observations
     }

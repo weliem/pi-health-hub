@@ -16,6 +16,8 @@ import java.util.UUID
 
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.gatt.*
+import com.welie.healthhub.observations.SystemInfo
+import com.welie.healthhub.observations.SystemInfoStore
 import kotlin.collections.HashMap
 
 
@@ -97,6 +99,7 @@ class BluetoothHandler {
 
             // Not blacklisted so put it on the blacklist and connect to it
             blackList.add(peripheralAddress)
+            SystemInfoStore.add(SystemInfo(peripheral.address))
             logger.info(scanResult.toString())
             handler.postDelayed({ central.connectPeripheral(peripheral, peripheralCallback) }, 1000)
         }

@@ -4,9 +4,7 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.measurementLocation
-import com.welie.healthhub.observations.Observation
-import com.welie.healthhub.observations.ObservationLocation
-import com.welie.healthhub.observations.ObservationType.*
+import com.welie.healthhub.observations.*
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import com.welie.healthhub.observations.ObservationUnit.Percent
 import com.welie.healthhub.sensorType
@@ -23,18 +21,21 @@ data class PulseOximeterSpotMeasurement(
     val createdAt: Date = Calendar.getInstance().time
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
+        val systemInfo = requireNotNull(SystemInfoStore.get(peripheral.address))
         val observations = ArrayList<Observation>()
         if (spO2 in 0.0f..100.0f) {
             observations.add(
                 Observation(
                     value = spO2,
-                    type = BloodOxygenSaturation,
                     unit = Percent,
+                    subject = ObservationSubject.Oxygen,
+                    quantityType = QuantityType.Saturation,
+                    volumeOf = VolumeTypes.ArterialBlood,
                     timestamp = timestamp,
                     location = peripheral.measurementLocation(),
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = peripheral.address
+                    systemInfo = systemInfo
                 )
             )
         }
@@ -42,13 +43,14 @@ data class PulseOximeterSpotMeasurement(
             observations.add(
                 Observation(
                     value = pulseRate,
-                    type = HeartRate,
                     unit = BeatsPerMinute,
+                    subject = ObservationSubject.HeartBeat,
+                    quantityType = QuantityType.Frequency,
                     timestamp = timestamp,
                     location = peripheral.measurementLocation(),
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = peripheral.address
+                    systemInfo = systemInfo
                 )
             )
         }
@@ -56,13 +58,14 @@ data class PulseOximeterSpotMeasurement(
             observations.add(
                 Observation(
                     value = it,
-                    type = PulseAmplitudeIndex,
                     unit = Percent,
+                    subject = ObservationSubject.PpgSignal,
+                    quantityType = QuantityType.SignalQuality,
                     timestamp = timestamp,
                     location = peripheral.measurementLocation(),
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
-                    systemId = peripheral.address
+                    systemInfo = systemInfo
                 )
             )
         }
@@ -84,7 +87,7 @@ data class PulseOximeterSpotMeasurement(
             val timestamp = if (timestampPresent) parser.dateTime else null
             val measurementStatus = if (measurementStatusPresent) parser.getIntValue(FORMAT_UINT16) else null
             val sensorStatus = if (sensorStatusPresent) parser.getIntValue(FORMAT_UINT16) else null
-            val reservedByte = if (sensorStatusPresent) parser.getIntValue(FORMAT_UINT8) else null
+            if (sensorStatusPresent) parser.getIntValue(FORMAT_UINT8) // Reserved byte
             val pulseAmplitudeIndex = if (pulseAmplitudeIndexPresent) parser.getFloatValue(FORMAT_SFLOAT) else null
 
             return PulseOximeterSpotMeasurement(

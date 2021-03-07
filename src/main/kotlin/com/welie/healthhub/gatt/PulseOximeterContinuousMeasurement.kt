@@ -34,7 +34,7 @@ data class PulseOximeterContinuousMeasurement(
             val pulseRateSlow = if (spo2SlowPresent) parser.getFloatValue(FORMAT_SFLOAT) else null
             val measurementStatus = if (measurementStatusPresent) parser.getIntValue(FORMAT_UINT16) else null
             val sensorStatus = if (sensorStatusPresent) parser.getIntValue(FORMAT_UINT16) else null
-            val reservedByte = if (sensorStatusPresent) parser.getIntValue(FORMAT_UINT8) else null
+            if (sensorStatusPresent) parser.getIntValue(FORMAT_UINT8) // Reserved byte
             val pulseAmplitudeIndex = if (pulseAmplitudeIndexPresent) parser.getFloatValue(FORMAT_SFLOAT) else null
 
             return PulseOximeterContinuousMeasurement(

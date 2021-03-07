@@ -5,10 +5,7 @@ import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT16
 import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.measurementLocation
-import com.welie.healthhub.observations.Observation
-import com.welie.healthhub.observations.ObservationLocation
-import com.welie.healthhub.observations.ObservationLocation.Unknown
-import com.welie.healthhub.observations.ObservationType.HeartRate
+import com.welie.healthhub.observations.*
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import com.welie.healthhub.sensorType
 import java.util.*
@@ -23,18 +20,22 @@ data class HeartRateMeasurement(
 ) {
     fun asObservationList(peripheral: BluetoothPeripheral): List<Observation> {
         if (sensorContactStatus == SensorContactFeature.SupportedNoContact) return emptyList()
+        val systemInfo = requireNotNull(SystemInfoStore.get(peripheral.address))
 
         return if (pulse in 20..250) {
-            listOf(Observation(
-                value = pulse.toFloat(),
-                type = HeartRate,
-                unit = BeatsPerMinute,
-                timestamp = createdAt,
-                location = peripheral.measurementLocation(),
-                sensorType = peripheral.sensorType(),
-                systemId = peripheral.address,
-                receivedTimestamp = createdAt
-               ))
+            listOf(
+                Observation(
+                    value = pulse.toFloat(),
+                    unit = BeatsPerMinute,
+                    subject = ObservationSubject.HeartBeat,
+                    quantityType = QuantityType.Frequency,
+                    timestamp = createdAt,
+                    location = peripheral.measurementLocation(),
+                    sensorType = peripheral.sensorType(),
+                    receivedTimestamp = createdAt,
+                    systemInfo = systemInfo
+                )
+            )
         } else emptyList()
     }
 
