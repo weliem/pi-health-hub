@@ -11,6 +11,7 @@ import com.welie.healthhub.isPhilipsThermometer
 import com.welie.healthhub.observations.*
 import com.welie.healthhub.sensorType
 import java.util.*
+import kotlin.math.abs
 
 data class TemperatureMeasurement(
     val temperatureValue: Float,
@@ -23,11 +24,23 @@ data class TemperatureMeasurement(
         val systemInfo = requireNotNull(SystemInfoStore.get(peripheral.address))
         var finalLocation = type.asObservationLocation()
         var finalSubject = if (type != Unknown) ObservationSubject.Body else ObservationSubject.Unknown
+        var finalTimestamp = timestamp
 
         // Peripheral specific corrections
         if (peripheral.isPhilipsThermometer()) {
             finalSubject = ObservationSubject.Body
             finalLocation = ObservationLocation.Ear
+
+            // Correct timestamp if needed
+            systemInfo.dateTime?.let {
+                val nowInMiliseconds = Calendar.getInstance().time.time
+                val intervalWithNow = nowInMiliseconds - it.time
+                if (abs(intervalWithNow) > 10000L) {
+                    // Current time is wrong so apply correction)
+                    var interval = (it.time - timestamp!!.time)
+                    finalTimestamp = Date(nowInMiliseconds - interval)
+                }
+            }
         }
 
         return if (temperatureValue in -200.0f..200.0f) {
