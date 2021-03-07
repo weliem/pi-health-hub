@@ -18,9 +18,9 @@ class CurrentTimeServiceHandler : ServiceHandler() {
         super.onCharacteristicsDiscovered(peripheral, characteristics)
 
         peripheral.getCharacteristic(SERVICE_UUID, CURRENT_TIME_CHARACTERISTIC_UUID)?.let {
+            peripheral.readCharacteristic(SERVICE_UUID, CURRENT_TIME_CHARACTERISTIC_UUID)
             writeCurrentTime(peripheral, it)
         }
-        peripheral.readCharacteristic(SERVICE_UUID, CURRENT_TIME_CHARACTERISTIC_UUID)
     }
 
     override fun onCharacteristicChanged(peripheral: BluetoothPeripheral, value: ByteArray, characteristic: BluetoothGattCharacteristic, status: BluetoothCommandStatus) {

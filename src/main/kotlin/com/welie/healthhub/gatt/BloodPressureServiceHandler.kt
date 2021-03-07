@@ -1,5 +1,6 @@
 package com.welie.healthhub.gatt
 
+import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
@@ -18,6 +19,7 @@ class BloodPressureServiceHandler() : ServiceHandler() {
         // A&D peripherals have a DATE TIME characteristic, so write that first
         peripheral.getCharacteristic(SERVICE_UUID, DATE_TIME_CHARACTERISTIC_UUID)?.let {
             writeDateTime(peripheral, it)
+            peripheral.readCharacteristic(it)
         }
 
         peripheral.readCharacteristic(SERVICE_UUID, BLOOD_PRESSURE_FEATURE_CHARACTERISTIC_UUID)
@@ -37,6 +39,9 @@ class BloodPressureServiceHandler() : ServiceHandler() {
             }
             INTERMEDIATE_CUFF_PRESSURE_CHARACTERISTIC_UUID -> {
                 //callback?.onIntermediateCuffPressure(BloodPressureMeasurement.fromBytes(value), peripheral)
+            }
+            DATE_TIME_CHARACTERISTIC_UUID -> {
+                callback?.onPeripheralTime(BluetoothBytesParser(value).dateTime, peripheral.address)
             }
         }
     }

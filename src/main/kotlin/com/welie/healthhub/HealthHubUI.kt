@@ -80,7 +80,12 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
     override fun onObservationList(observationList: List<Observation>) {
         logger.info(observationList.toString())
         val quantityTypes = observationList.map { it.quantityType }
-        val displaybleTypes = setOf(QuantityType.Saturation, QuantityType.Concentration, QuantityType.Frequency, QuantityType.Mass, QuantityType.Temperature)
+        val displaybleTypes = setOf(
+            QuantityType.Saturation,
+            QuantityType.Concentration,
+            QuantityType.Frequency,
+            QuantityType.Mass,
+            QuantityType.Temperature)
 
         // Handle observation list
         if (quantityTypes.contains(QuantityType.SystolicPressure) && quantityTypes.contains(QuantityType.DiastolicPressure)) {

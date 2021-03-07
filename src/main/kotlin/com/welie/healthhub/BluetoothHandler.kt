@@ -88,6 +88,7 @@ class BluetoothHandler {
             handler.postDelayed({
                 logger.info("removing '$peripheralAddress' from blacklist")
                 blackList.remove(peripheralAddress)
+                startScanning()
             }, peripheral.reconnectionDelay())
         }
 

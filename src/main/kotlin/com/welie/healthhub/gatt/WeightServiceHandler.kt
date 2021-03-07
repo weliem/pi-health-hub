@@ -21,6 +21,7 @@ class WeightServiceHandler : ServiceHandler() {
         // A&D peripherals have a DATE TIME characteristic, so write that first
         peripheral.getCharacteristic(SERVICE_UUID, DATE_TIME_CHARACTERISTIC_UUID)?.let {
             writeDateTime(peripheral, it)
+            peripheral.readCharacteristic(it)
         }
 
         peripheral.setNotify(SERVICE_UUID, WSS_MEASUREMENT_CHAR_UUID, true)
@@ -35,6 +36,9 @@ class WeightServiceHandler : ServiceHandler() {
                 WSS_MEASUREMENT_CHAR_UUID -> {
                     callback?.onObservationList(WeightMeasurement.fromBytes(value).asObservationList(peripheral))
                     startDisconnectTimer(peripheral)
+                }
+                DATE_TIME_CHARACTERISTIC_UUID -> {
+                    callback?.onPeripheralTime(BluetoothBytesParser(value).dateTime, peripheral.address)
                 }
             }
         } catch (exception: Exception) {
