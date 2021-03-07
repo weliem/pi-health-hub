@@ -71,6 +71,7 @@ fun BluetoothPeripheral.reconnectionDelay(): Long {
         isTaidocThermometer1241() -> 40000
         isIndieHealthScale() -> 23000
         isAndScale() -> 15000
+        isPhilipsThermometer() -> 25000
         else -> 10000
     }
 }

@@ -37,7 +37,7 @@ data class TemperatureMeasurement(
                 val intervalWithNow = nowInMiliseconds - it.time
                 if (abs(intervalWithNow) > 10000L) {
                     // Current time is wrong so apply correction)
-                    var interval = (it.time - timestamp!!.time)
+                    val interval = (it.time - timestamp!!.time)
                     finalTimestamp = Date(nowInMiliseconds - interval)
                 }
             }
@@ -50,7 +50,7 @@ data class TemperatureMeasurement(
                     unit = unit,
                     subject = finalSubject,
                     quantityType = QuantityType.Temperature,
-                    timestamp = timestamp,
+                    timestamp = finalTimestamp,
                     location = finalLocation,
                     sensorType = peripheral.sensorType(),
                     receivedTimestamp = createdAt,
