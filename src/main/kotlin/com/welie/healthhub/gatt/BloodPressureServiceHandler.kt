@@ -4,7 +4,8 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.DataCallback
+import com.welie.healthhub.observations.ObservationsCallback
+import com.welie.healthhub.observations.SystemInfoStore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -12,7 +13,7 @@ import java.util.*
 class BloodPressureServiceHandler() : ServiceHandler() {
 
     override val TAG: String = "BloodPressureServiceHandler"
-    override var callback: DataCallback? = null
+    override var callback: ObservationsCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
@@ -41,7 +42,7 @@ class BloodPressureServiceHandler() : ServiceHandler() {
                 //callback?.onIntermediateCuffPressure(BloodPressureMeasurement.fromBytes(value), peripheral)
             }
             DATE_TIME_CHARACTERISTIC_UUID -> {
-                callback?.onPeripheralTime(BluetoothBytesParser(value).dateTime, peripheral.address)
+                SystemInfoStore.get(peripheral.address).dateTime = BluetoothBytesParser(value).dateTime
             }
         }
     }

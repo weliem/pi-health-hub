@@ -5,7 +5,6 @@ import com.welie.blessed.BluetoothBytesParser.*
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.measurementLocation
 import com.welie.healthhub.observations.*
-import com.welie.healthhub.observations.ObservationType.*
 import com.welie.healthhub.observations.ObservationUnit.BeatsPerMinute
 import com.welie.healthhub.sensorType
 import java.util.*

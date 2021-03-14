@@ -4,14 +4,15 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.DataCallback
+import com.welie.healthhub.observations.ObservationsCallback
+import com.welie.healthhub.observations.SystemInfoStore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
 class CurrentTimeServiceHandler : ServiceHandler() {
     override val TAG: String = "CurrentTimeServiceHandler"
-    override var callback: DataCallback? = null
+    override var callback: ObservationsCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
@@ -28,7 +29,7 @@ class CurrentTimeServiceHandler : ServiceHandler() {
 
         val parser = BluetoothBytesParser(value)
         when(characteristic.uuid) {
-            CURRENT_TIME_CHARACTERISTIC_UUID -> callback?.onPeripheralTime(parser.dateTime, peripheral.address)
+            CURRENT_TIME_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).dateTime = parser.dateTime
         }
     }
 

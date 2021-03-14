@@ -5,14 +5,15 @@ import com.welie.blessed.BluetoothBytesParser.FORMAT_UINT8
 import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.DataCallback
+import com.welie.healthhub.observations.ObservationsCallback
+import com.welie.healthhub.observations.SystemInfoStore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
 class BatteryServiceHandler: ServiceHandler() {
     override val TAG: String = "CurrentTimeServiceHandler"
-    override var callback: DataCallback? = null
+    override var callback: ObservationsCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
@@ -25,7 +26,7 @@ class BatteryServiceHandler: ServiceHandler() {
         try {
             val parser = BluetoothBytesParser(value)
             when(characteristic.uuid) {
-                BATTERY_LEVEL_CHARACTERISTIC_UUID -> callback?.onBatteryPercentage(parser.getIntValue(FORMAT_UINT8), peripheral.address)
+                BATTERY_LEVEL_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).batteryLevel = parser.getIntValue(FORMAT_UINT8)
             }
         } catch (exception: Exception) {
             logger.error("could not parse <${BluetoothBytesParser.bytes2String(value)}> for <${characteristic.uuid}>")

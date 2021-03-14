@@ -5,14 +5,14 @@ import com.welie.blessed.BluetoothCommandStatus.COMMAND_SUCCESS
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothGattCharacteristic.WriteType.WITH_RESPONSE
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.DataCallback
+import com.welie.healthhub.observations.ObservationsCallback
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
 class GlucoseServiceHandler: ServiceHandler() {
     override val TAG: String = "GlucoseServiceHandler"
-    override var callback: DataCallback? = null
+    override var callback: ObservationsCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {

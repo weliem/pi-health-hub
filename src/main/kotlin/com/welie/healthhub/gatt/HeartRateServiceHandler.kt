@@ -3,7 +3,7 @@ package com.welie.healthhub.gatt
 import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.DataCallback
+import com.welie.healthhub.observations.ObservationsCallback
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -11,7 +11,7 @@ import java.util.*
 class HeartRateServiceHandler : ServiceHandler() {
 
     override val TAG: String = "HeartRateServiceHandler"
-    override var callback: DataCallback? = null
+    override var callback: ObservationsCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {

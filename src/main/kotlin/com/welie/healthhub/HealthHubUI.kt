@@ -1,16 +1,14 @@
 package com.welie.healthhub
 
 import com.welie.healthhub.observations.Observation
-import com.welie.healthhub.observations.ObservationType
+import com.welie.healthhub.observations.ObservationsCallback
 import com.welie.healthhub.observations.QuantityType
-import com.welie.healthhub.observations.SystemInfoStore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.swing.JFrame
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Container
-import java.util.*
 
 import javax.swing.JScrollPane
 
@@ -23,7 +21,7 @@ import javax.swing.SwingUtilities
 import javax.swing.text.StyledDocument
 
 
-class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
+class HealthHubUI(bluetoothHandler: BluetoothHandler) : ObservationsCallback {
 
     private val logger: Logger = LoggerFactory.getLogger("HealthHubUI")
     private val overallStyles = SimpleAttributeSet()
@@ -103,41 +101,6 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : DataCallback {
                 }
             }
         }
-    }
-
-    override fun onBatteryPercentage(percentage: Int, systemId: String) {
-        logger.info("Battery percentage $percentage")
-        SystemInfoStore.get(systemId)?.batteryLevel = percentage
-    }
-
-    override fun onPeripheralTime(dateTime: Date, systemId: String) {
-        SystemInfoStore.get(systemId)?.dateTime = dateTime
-    }
-
-    override fun onManufacturerName(manufacturer: String, systemId: String) {
-        logger.info("Manufacturer name: $manufacturer")
-        SystemInfoStore.get(systemId)?.manufacturer = manufacturer
-    }
-
-    override fun onModelNumber(modelNumber: String, systemId: String) {
-        logger.info("Model number $modelNumber")
-        SystemInfoStore.get(systemId)?.model = modelNumber
-    }
-
-    override fun onSerialNumber(serialNumber: String, systemId: String) {
-        SystemInfoStore.get(systemId)?.serialNumber = serialNumber
-    }
-
-    override fun onFirmwareRevision(firmwareRevision: String, systemId: String) {
-        SystemInfoStore.get(systemId)?.firmwareVersion = firmwareRevision
-    }
-
-    override fun onHardwareRevision(hardwareRevision: String, systemId: String) {
-        SystemInfoStore.get(systemId)?.hardwareVersion = hardwareRevision
-    }
-
-    override fun onSoftwareRevision(softwareRevision: String, systemId: String) {
-        SystemInfoStore.get(systemId)?.softwareVersion = softwareRevision
     }
 
     private fun showObservation(observation: Observation) {

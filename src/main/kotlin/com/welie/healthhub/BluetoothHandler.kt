@@ -16,6 +16,7 @@ import java.util.UUID
 
 import com.welie.blessed.BluetoothPeripheral
 import com.welie.healthhub.gatt.*
+import com.welie.healthhub.observations.ObservationsCallback
 import com.welie.healthhub.observations.SystemInfo
 import com.welie.healthhub.observations.SystemInfoStore
 import kotlin.collections.HashMap
@@ -122,7 +123,7 @@ class BluetoothHandler {
         central.scanForPeripheralsWithServices(serviceHandlers.keys.toTypedArray())
     }
 
-    fun setDataCallback(callback: DataCallback) {
+    fun setDataCallback(callback: ObservationsCallback) {
         serviceHandlers.forEach { it.value.callback = callback }
     }
 

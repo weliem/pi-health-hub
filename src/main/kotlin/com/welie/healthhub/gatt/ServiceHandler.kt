@@ -1,7 +1,7 @@
 package com.welie.healthhub.gatt
 
 import com.welie.blessed.*
-import com.welie.healthhub.DataCallback
+import com.welie.healthhub.observations.ObservationsCallback
 import com.welie.healthhub.isANDPeripheral
 import com.welie.healthhub.turnOffAllNotifications
 import org.slf4j.Logger
@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledFuture
 abstract class ServiceHandler {
 
     abstract val TAG: String
-    abstract var callback: DataCallback?
+    abstract var callback: ObservationsCallback?
     abstract val logger: Logger
 
     private var timeoutFuture: ScheduledFuture<*>? = null

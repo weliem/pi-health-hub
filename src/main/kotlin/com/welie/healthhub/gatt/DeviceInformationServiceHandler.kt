@@ -4,7 +4,8 @@ import com.welie.blessed.BluetoothBytesParser
 import com.welie.blessed.BluetoothCommandStatus
 import com.welie.blessed.BluetoothGattCharacteristic
 import com.welie.blessed.BluetoothPeripheral
-import com.welie.healthhub.DataCallback
+import com.welie.healthhub.observations.ObservationsCallback
+import com.welie.healthhub.observations.SystemInfoStore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -12,7 +13,7 @@ import java.util.*
 class DeviceInformationServiceHandler : ServiceHandler() {
 
     override val TAG: String = "DeviceInformationServiceHandler"
-    override var callback: DataCallback? = null
+    override var callback: ObservationsCallback? = null
     override val logger: Logger = LoggerFactory.getLogger(TAG)
 
     override fun onCharacteristicsDiscovered(peripheral: BluetoothPeripheral, characteristics: List<BluetoothGattCharacteristic>) {
@@ -31,12 +32,12 @@ class DeviceInformationServiceHandler : ServiceHandler() {
         try {
             val stringValue = BluetoothBytesParser(value).stringValue
             when(characteristic.uuid) {
-                MANUFACTURER_NAME_CHARACTERISTIC_UUID -> callback?.onManufacturerName(stringValue, peripheral.address)
-                MODEL_NUMBER_CHARACTERISTIC_UUID -> callback?.onModelNumber(stringValue, peripheral.address)
-                SERIAL_NUMBER_CHARACTERISTIC_UUID -> callback?.onSerialNumber(stringValue, peripheral.address)
-                HARDWARE_REVISION_CHARACTERISTIC_UUID -> callback?.onHardwareRevision(stringValue, peripheral.address)
-                FIRMWARE_REVISION_CHARACTERISTIC_UUID -> callback?.onFirmwareRevision(stringValue, peripheral.address)
-                SOFTWARE_REVISION_CHARACTERISTIC_UUID -> callback?.onSoftwareRevision(stringValue, peripheral.address)
+                MANUFACTURER_NAME_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).manufacturer = stringValue
+                MODEL_NUMBER_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).model = stringValue
+                SERIAL_NUMBER_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).serialNumber = stringValue
+                HARDWARE_REVISION_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).hardwareVersion = stringValue
+                FIRMWARE_REVISION_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).firmwareVersion = stringValue
+                SOFTWARE_REVISION_CHARACTERISTIC_UUID -> SystemInfoStore.get(peripheral.address).softwareVersion = stringValue
             }
         } catch (exception: Exception) {
             logger.error("could not parse <${BluetoothBytesParser.bytes2String(value)}> for <${characteristic.uuid}>")
