@@ -93,14 +93,6 @@ fun Observation.mdcObservationType(): String {
     }
 
     return ""
-
-
-
-//    BodyHeight("MDC_LEN_BODY_ACTUAL", "8302-2"),
-//    BodyMassIndex("MDC_RATIO_MASS_BODY_LEN_SQ", ""),
-//    BloodGlucoseConcentration("MDC_CONC_GLU_GEN", "2339-0"),
-//    BloodOxygenSaturation("MDC_PULS_OXIM_SAT_O2", "20564-1")
-//    PulseAmplitudeIndex("MDC_SAT_O2_QUAL",""),
 }
 
 fun mdcObservationDisplay(mdcCode : String) : String {
