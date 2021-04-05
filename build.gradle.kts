@@ -1,7 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.20"
+    kotlin("jvm") version "1.4.30"
+    kotlin("plugin.serialization") version "1.4.30"
 }
 
 group = "me.martijn"
@@ -13,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     implementation ("ch.qos.logback:logback-core:+")
     implementation ("ch.qos.logback:logback-classic:+")
     implementation("com.github.weliem.blessed-bluez:blessed:0.38")

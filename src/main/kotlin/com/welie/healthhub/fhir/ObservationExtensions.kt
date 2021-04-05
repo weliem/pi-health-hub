@@ -1,11 +1,51 @@
 package com.welie.healthhub.fhir
 
 import com.welie.healthhub.observations.*
+import kotlinx.serialization.json.*
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
 
 fun Observation.asFhir(): String {
-    val observationTypeMdc = mdcObservationType()
-    val observationUnitMdc = unit.mdc
-    return "code: {\"coding\": [{\"system\": \"urn:iso:std:iso:11073:10101\",\"code\": \"$observationTypeMdc\" }],"
+    val codingSystem = "urn:iso:std:iso:11073:10101"
+    val observationCode = mdcObservationType()
+    val observationDisplay = mdcObservationDisplay(observationCode)
+    val unitCode = unit.mdc
+    val localDate = timestamp!!.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val dateTime = DateTimeFormatter.ISO_DATE_TIME.format(localDate)
+
+    val fhir = buildJsonObject {
+        put("resourceType", "Observation")
+        put("status", "final")
+        putJsonArray("category") {
+            addJsonObject {
+                putJsonArray("coding") {
+                    addJsonObject {
+                        put("system", "http://terminology.hl7.org/CodeSystems/observation_category")
+                        put("code", "vital-signs")
+                        put("display", "Vital Signs")
+                    }
+                }
+            }
+        }
+        putJsonObject("code") {
+            putJsonArray("coding") {
+                addJsonObject {
+                    put("system", codingSystem)
+                    put("code", observationCode)
+                    put("display", observationDisplay)
+                }
+            }
+        }
+        put("effectiveDateTime", dateTime)
+        putJsonObject("valueQuantity") {
+            put("value", value)
+            put("unit", unit.notation)
+            put("system", codingSystem)
+            put("code", unitCode)
+        }
+    }
+    return fhir.toString()
 }
 
 fun Observation.mdcObservationType(): String {
@@ -61,4 +101,11 @@ fun Observation.mdcObservationType(): String {
 //    BloodGlucoseConcentration("MDC_CONC_GLU_GEN", "2339-0"),
 //    BloodOxygenSaturation("MDC_PULS_OXIM_SAT_O2", "20564-1")
 //    PulseAmplitudeIndex("MDC_SAT_O2_QUAL",""),
+}
+
+fun mdcObservationDisplay(mdcCode : String) : String {
+    return when(mdcCode) {
+        "MDC_TEMP_TYMP" -> "Temperature tympanum"
+        else -> "unknown"
+    }
 }

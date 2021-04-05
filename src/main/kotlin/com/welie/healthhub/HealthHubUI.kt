@@ -1,5 +1,6 @@
 package com.welie.healthhub
 
+import com.welie.healthhub.fhir.asFhir
 import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.observations.ObservationsCallback
 import com.welie.healthhub.observations.QuantityType
@@ -104,6 +105,7 @@ class HealthHubUI(bluetoothHandler: BluetoothHandler) : ObservationsCallback {
     }
 
     private fun showObservation(observation: Observation) {
+        val fhir = observation.asFhir()
         with(observation) {
             updateValue(String.format("%.1f", value), unit.notation, timestamp.toString())
         }
