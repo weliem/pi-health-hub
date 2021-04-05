@@ -3,6 +3,7 @@ package com.welie.healthhub.fhir
 import com.welie.healthhub.observations.*
 import kotlinx.serialization.json.*
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 
@@ -11,8 +12,8 @@ fun Observation.asFhir(): String {
     val observationCode = mdcObservationType()
     val observationDisplay = mdcObservationDisplay(observationCode)
     val unitCode = unit.mdc
-    val localDate = timestamp!!.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
-    val dateTime = DateTimeFormatter.ISO_DATE_TIME.format(localDate)
+    val zonedDateTime = ZonedDateTime.ofInstant(timestamp!!.toInstant(), ZoneId.systemDefault())
+    val dateTime = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(zonedDateTime)
 
     val fhir = buildJsonObject {
         put("resourceType", "Observation")
