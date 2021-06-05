@@ -51,6 +51,7 @@ class BluetoothHandler : ObservationsCallback {
             try {
                 serviceHandlers[characteristic.service?.uuid]?.onCharacteristicChanged(peripheral, value, characteristic, status)
             } catch (ex : Exception) {
+                logger.error(ex.toString())
                 logger.error("error parsing ${bytes2String(value)}")
             }
         }
@@ -124,11 +125,12 @@ class BluetoothHandler : ObservationsCallback {
     }
 
     private fun startScanning() {
-        central.scanForPeripheralsWithServices(serviceHandlers.keys.toTypedArray())
+        val serviceUUIDs = serviceHandlers.keys.filter { it != DeviceInformationServiceHandler.SERVICE_UUID }
+        central.scanForPeripheralsWithServices(serviceUUIDs.toTypedArray())
     }
 
     fun setDataCallback(callback: ObservationsCallback) {
-        serviceHandlers.forEach { it.value.callback = callback }
+        serviceHandlers.forEach { it.value.callback = this }
     }
 
     fun setFrame(frame: JFrame) {

@@ -14,12 +14,16 @@ class FhirUploader {
         val body: RequestBody = fhir.toRequestBody("application/json".toMediaType())
 
         val request = Request.Builder()
-            .url("https://10.0.0.20/")
+            .url("http://10.0.0.59:8080/fhir/Observation")
             .post(body)
             .build()
 
         client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            if (!response.isSuccessful) {
+                println("FHIR post FAILED")
+            } else {
+                println("FHIR post succeeded")
+            }
 
             println(response.body!!.string())
         }
