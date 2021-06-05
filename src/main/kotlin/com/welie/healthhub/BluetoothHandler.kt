@@ -15,16 +15,20 @@ import javax.swing.JOptionPane
 import java.util.UUID
 
 import com.welie.blessed.BluetoothPeripheral
+import com.welie.healthhub.fhir.FhirUploader
+import com.welie.healthhub.fhir.asFhir
 import com.welie.healthhub.gatt.*
+import com.welie.healthhub.observations.Observation
 import com.welie.healthhub.observations.ObservationsCallback
 import com.welie.healthhub.observations.SystemInfo
 import com.welie.healthhub.observations.SystemInfoStore
 import kotlin.collections.HashMap
 
 
-class BluetoothHandler {
+class BluetoothHandler : ObservationsCallback {
     private val logger: Logger = LoggerFactory.getLogger(TAG)
     private val handler: Handler = Handler(TAG)
+    private val uploader: FhirUploader = FhirUploader()
     private lateinit var frame: JFrame
     private val serviceHandlers: MutableMap<UUID, ServiceHandler> = HashMap()
 
@@ -129,6 +133,10 @@ class BluetoothHandler {
 
     fun setFrame(frame: JFrame) {
         this.frame = frame
+    }
+
+    override fun onObservationList(observationList: List<Observation>) {
+        observationList.forEach { uploader.upload(it.asFhir()) }
     }
 
     companion object {

@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation ("ch.qos.logback:logback-core:+")
     implementation ("ch.qos.logback:logback-classic:+")
     implementation("com.github.weliem.blessed-bluez:blessed:0.38")
