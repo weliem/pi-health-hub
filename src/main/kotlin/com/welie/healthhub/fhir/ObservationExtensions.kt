@@ -11,7 +11,7 @@ fun Observation.asFhir(): String {
     val codingSystem = "urn:iso:std:iso:11073:10101"
     val observationCode = ObservationType.fromString(mdcObservationType())
     val observationDisplay = observationCode.toString()
-    val unitCode = unit.mdc
+    val unitCode = UnitCode.fromString(unit.mdc)
     val zonedDateTime = ZonedDateTime.ofInstant(timestamp!!.toInstant(), ZoneId.systemDefault())
     val dateTime = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(zonedDateTime)
 
@@ -43,7 +43,7 @@ fun Observation.asFhir(): String {
             put("value", value)
             put("unit", unit.notation)
             put("system", codingSystem)
-            put("code", unitCode)
+            put("code", unitCode.value)
         }
     }
     return fhir.toString()
