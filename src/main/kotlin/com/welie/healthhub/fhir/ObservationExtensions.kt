@@ -33,7 +33,7 @@ fun Observation.asFhir(): String {
             putJsonArray("coding") {
                 addJsonObject {
                     put("system", codingSystem)
-                    put("code", observationCode)
+                    put("code", observationCode.value)
                     put("display", observationDisplay)
                 }
             }
