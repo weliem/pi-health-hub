@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter
 
 fun Observation.asFhir(): String {
     val codingSystem = "urn:iso:std:iso:11073:10101"
-    val observationCode = mdcObservationType()
-    val observationDisplay = mdcObservationDisplay(observationCode)
+    val observationCode = ObservationType.fromString(mdcObservationType())
+    val observationDisplay = observationCode.toString()
     val unitCode = unit.mdc
     val zonedDateTime = ZonedDateTime.ofInstant(timestamp!!.toInstant(), ZoneId.systemDefault())
     val dateTime = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(zonedDateTime)
@@ -96,9 +96,4 @@ fun Observation.mdcObservationType(): String {
     return ""
 }
 
-fun mdcObservationDisplay(mdcCode : String) : String {
-    return when(mdcCode) {
-        "MDC_TEMP_TYMP" -> "Temperature tympanum"
-        else -> "unknown"
-    }
-}
+
