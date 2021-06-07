@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter
 
 
 fun Observation.asFhir(): String {
+    val observation = this
     val codingSystem = "urn:iso:std:iso:11073:10101"
     val observationCode = ObservationType.fromString(mdcObservationType())
     val observationDisplay = observationCode.toString()
@@ -43,13 +44,22 @@ fun Observation.asFhir(): String {
         }
         put("effectiveDateTime", dateTime)
         putJsonObject("valueQuantity") {
-            put("value", value)
-            put("unit", unit.notation)
-            put("system", codingSystem)
-            put("code", unitCode.value)
+            addValue(this, observation, codingSystem, unitCode)
         }
     }
     return fhir.toString()
+}
+
+private fun addValue(
+    jsonObjectBuilder: JsonObjectBuilder,
+    observation: Observation,
+    codingSystem: String,
+    unitCode: UnitCode
+) {
+    jsonObjectBuilder.put("value", observation.value)
+    jsonObjectBuilder.put("unit", observation.unit.notation)
+    jsonObjectBuilder.put("system", codingSystem)
+    jsonObjectBuilder.put("code", unitCode.value)
 }
 
 fun Observation.mdcObservationType(): String {
