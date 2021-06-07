@@ -38,6 +38,9 @@ fun Observation.asFhir(): String {
                 }
             }
         }
+        putJsonObject("subject") {
+            put("reference", "Patient/1")
+        }
         put("effectiveDateTime", dateTime)
         putJsonObject("valueQuantity") {
             put("value", value)
@@ -93,6 +96,17 @@ fun Observation.mdcObservationType(): String {
         return "MDC_PRESS_BLD_NONINV_MEAN"
     }
 
+    if (quantityType == QuantityType.Concentration && subject == ObservationSubject.Glucose) {
+      if (volumeOf == VolumeTypes.ArterialBlood) {
+          return "MDC_CONC_GLU_ARTERIAL_WHOLEBLOOD"
+      }
+    }
+
+    if (quantityType == QuantityType.Saturation && subject == ObservationSubject.Oxygen) {
+        if (volumeOf == VolumeTypes.ArterialBlood && sensorType == SensorType.PpgSensor) {
+            return "MDC_PULS_OXIM_SAT_O2"
+        }
+    }
     return ""
 }
 
