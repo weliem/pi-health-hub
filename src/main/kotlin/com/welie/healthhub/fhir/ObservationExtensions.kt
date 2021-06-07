@@ -39,7 +39,7 @@ fun Observation.asFhir(): String {
             }
         }
         putJsonObject("subject") {
-            put("reference", "Patient/1")
+            put("reference", "Patient/2")
         }
         put("effectiveDateTime", dateTime)
         putJsonObject("valueQuantity") {
@@ -79,8 +79,8 @@ fun Observation.mdcObservationType(): String {
         return when(sensorType) {
             SensorType.EcgSensor -> "MDC_ECG_HEART_RATE"
             SensorType.PressureCuff -> "MDC_PULS_RATE_NON_INV"
-            SensorType.PpgSensor -> "MDC_PLETH_PULS"
-            else -> "MDC_HF_HR"
+            SensorType.PpgSensor -> "MDC_PULS_OXIM_PULS_RATE"
+            else -> "MDC_PULS_RATE_NON_INV"
         }
     }
 

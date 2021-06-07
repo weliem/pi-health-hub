@@ -129,7 +129,10 @@ class BluetoothHandler : ObservationsCallback {
         central.scanForPeripheralsWithServices(serviceUUIDs.toTypedArray())
     }
 
+    private var callback: ObservationsCallback? = null
+
     fun setDataCallback(callback: ObservationsCallback) {
+        this.callback = callback
         serviceHandlers.forEach { it.value.callback = this }
     }
 
@@ -138,7 +141,8 @@ class BluetoothHandler : ObservationsCallback {
     }
 
     override fun onObservationList(observationList: List<Observation>) {
-        observationList.forEach { uploader.upload(it.asFhir()) }
+        handler.post { observationList.forEach { uploader.upload(it.asFhir()) } }
+        callback?.onObservationList(observationList)
     }
 
     companion object {

@@ -14,7 +14,7 @@ const val taidocThermometer1241 = "TAIDOC TD1241" // Fixed
 const val polarH7 = "Polar H7" // Starts with
 const val polarH10 = "Polar H10" // Starts with
 const val polarOH1 = "Polar OH1" // Starts with
-const val nonin3230 = "Nonin 3230" // Starts with
+const val nonin3230 = "Nonin3230" // Starts with
 
 fun BluetoothPeripheral.turnOffAllNotifications() {
     // Turn off notifications for all characteristics that are notifying
