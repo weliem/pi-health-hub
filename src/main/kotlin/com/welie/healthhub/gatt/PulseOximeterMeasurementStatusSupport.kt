@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Koninklijke Philips N.V., 2020.
- * All rights reserved.
- */
 package com.welie.healthhub.gatt
 
 class PulseOximeterMeasurementStatusSupport(val measurementStatusSupportFlags: Int) {

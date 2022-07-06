@@ -1,10 +1,6 @@
-/*
- * Copyright (c) Koninklijke Philips N.V., 2020.
- * All rights reserved.
- */
 package com.welie.healthhub.gatt
 
-import com.philips.mjolnir.services.common.BluetoothBytesParser
+import com.welie.blessed.BluetoothBytesParser.*
 
 class PulseOximeterFeature(byteArray: ByteArray) {
     val isMeasurementStatusSupportPresent: Boolean
